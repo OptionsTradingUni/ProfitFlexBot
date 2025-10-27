@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 # Import database models
-from models import engine, metadata, trade_logs, users, posts, success_stories, rankings
+from models import engine, metadata, trade_logs, users, posts, success_stories
 
 def init_database():
     """Initialize the database with all tables"""

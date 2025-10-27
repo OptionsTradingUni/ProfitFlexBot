@@ -17,6 +17,10 @@ txids = Table(
 )
 
 # --- TXID Generation ---
+def generate_txid():
+    """Generate a simple 8-character transaction ID"""
+    return uuid.uuid4().hex[:8].upper()
+
 def generate_unique_txid(engine):
     """
     Generates a unique 8-character TXID, stores it in the DB, and prunes old ones.

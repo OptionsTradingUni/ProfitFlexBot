@@ -598,3 +598,16 @@ RANKING_TRADERS = [
     ("joshuarodriguez_de55b", "Joshua Rodriguez"),
     ("christinerobinson_bfa76", "Christine Robinson"),
     ("kimberlyallen_48f33", "Kimberly Allen"),
+]
+
+import random
+
+def get_random_trader():
+    """Get a random trader name from the pool"""
+    return random.choice([name for _, name in RANKING_TRADERS])
+
+if __name__ == "__main__":
+    print(f"Total traders in pool: {len(RANKING_TRADERS)}")
+    print("Sample traders:")
+    for i in range(10):
+        print(f"{i+1}. {get_random_trader()}")

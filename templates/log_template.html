@@ -265,7 +265,7 @@
         return;
       }
 
-      container.innerHTML = data.slice(0, 40).map(log => `
+      container.innerHTML = data.slice(0, 200).map(log => `
         <div>
           <strong style="color:#f9fafb; font-size: 18px;">${log.symbol}</strong> — 
           <span style="color:#94a3b8;">${log.broker_name}</span><br>

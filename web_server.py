@@ -34,15 +34,15 @@ def home():
     logger.info("Root URL '/' accessed successfully.")
     return "✅ Profit Flex Bot Web Server is running"
 
-# API route for last 100 trades
-@app.route("/api/recent100")
-def api_recent_100():
-    """Return up to 100 most recent trades as JSON data."""
+# API route for last 200 trades
+@app.route("/api/recent200")
+def api_recent_200():
+    """Return up to 200 most recent trades as JSON data."""
     try:
         with engine.connect() as conn:
             query = text("""
                 SELECT txid, symbol, trader_name, profit, roi, posted_at
-                FROM trade_logs ORDER BY posted_at DESC LIMIT 100
+                FROM trade_logs ORDER BY posted_at DESC LIMIT 200
             """)
             rows = conn.execute(query).mappings().all()
 
@@ -59,7 +59,7 @@ def api_recent_100():
             })
         return jsonify(data)
     except Exception as e:
-        logger.error(f"Error in /api/recent100: {e}")
+        logger.error(f"Error in /api/recent200: {e}")
         return jsonify({"error": "Failed to fetch trades"}), 500
 
 # Helper: Time-ago formatting
@@ -84,10 +84,10 @@ def time_ago(posted_at):
     else:
         return f"{days} day{'s' if days > 1 else ''} ago"
 
-# JSON API for last 40 trades
+# JSON API for last 200 trades
 @app.route("/api/recent")
 def recent_trade_logs():
-    """Return up to 40 most recent trades as JSON."""
+    """Return up to 200 most recent trades as JSON."""
     try:
         with engine.connect() as conn:
             query = text("""
@@ -96,7 +96,7 @@ def recent_trade_logs():
                        profit, roi, posted_at
                 FROM trade_logs
                 ORDER BY posted_at DESC
-                LIMIT 40
+                LIMIT 200
             """)
             rows = conn.execute(query).mappings().all()
 
