@@ -196,20 +196,20 @@ def create_professional_trade_image(
     
     # Header with broker branding
     header_height = 120
-    draw.rectangle([0, 0, width, header_height], fill=theme["card_bg"])
+    draw.rectangle((0, 0, width, header_height), fill=theme["card_bg"])
     draw.text((40, 45), broker_name, fill=theme["text"], font=font_title)
     
     # Status badge
     status_text = "FILLED"
     status_color = theme["profit"]
-    draw.rounded_rectangle([width - 200, 35, width - 40, 85], radius=25, fill=status_color)
+    draw.rounded_rectangle((width - 200, 35, width - 40, 85), radius=25, fill=status_color)
     draw.text((width - 170, 45), status_text, fill='#FFFFFF', font=font_small)
     
     y_offset = header_height + 40
     
     # Symbol and Direction Card
     card_y = y_offset
-    draw.rounded_rectangle([40, card_y, width - 40, card_y + 180], radius=20, fill=theme["card_bg"])
+    draw.rounded_rectangle((40, card_y, width - 40, card_y + 180), radius=20, fill=theme["card_bg"])
     
     draw.text((60, card_y + 30), symbol, fill=theme["primary"], font=font_large)
     direction_color = theme["profit"] if direction == "BUY" else theme["loss"]
@@ -228,7 +228,7 @@ def create_professional_trade_image(
     
     # Performance Card
     perf_card_y = y_offset
-    draw.rounded_rectangle([40, perf_card_y, width - 40, perf_card_y + 280], radius=20, fill=theme["card_bg"])
+    draw.rounded_rectangle((40, perf_card_y, width - 40, perf_card_y + 280), radius=20, fill=theme["card_bg"])
     
     # Profit/Loss
     profit_color = theme["profit"] if profit >= 0 else theme["loss"]
@@ -245,7 +245,7 @@ def create_professional_trade_image(
     
     # Execution Details Card
     details_y = y_offset
-    draw.rounded_rectangle([40, details_y, width - 40, details_y + 420], radius=20, fill=theme["card_bg"])
+    draw.rounded_rectangle((40, details_y, width - 40, details_y + 420), radius=20, fill=theme["card_bg"])
     
     details = [
         ("Entry Price", f"${entry_price:,.8f}".rstrip('0').rstrip('.')),
@@ -265,7 +265,7 @@ def create_professional_trade_image(
     
     # Trader Info Card
     trader_y = y_offset
-    draw.rounded_rectangle([40, trader_y, width - 40, trader_y + 140], radius=20, fill=theme["card_bg"])
+    draw.rounded_rectangle((40, trader_y, width - 40, trader_y + 140), radius=20, fill=theme["card_bg"])
     draw.text((60, trader_y + 30), "Trader", fill=theme["text_secondary"], font=font_small)
     draw.text((60, trader_y + 70), trader_name, fill=theme["text"], font=font_medium)
     
