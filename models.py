@@ -78,4 +78,9 @@ trade_logs = Table(
     Column("posted_at", DateTime, default=datetime.utcnow),
 )
 
-metadata.create_all(engine, checkfirst=True)
+try:
+    metadata.create_all(engine, checkfirst=True)
+except Exception as e:
+    import logging
+    logging.warning(f"Database tables may already exist: {e}")
+    metadata.reflect(bind=engine)
