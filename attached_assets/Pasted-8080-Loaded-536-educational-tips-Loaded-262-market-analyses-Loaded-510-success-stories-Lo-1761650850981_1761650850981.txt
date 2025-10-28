@@ -1,0 +1,40 @@
+8080...
+✅ Loaded 536 educational tips
+✅ Loaded 262 market analyses
+✅ Loaded 510 success stories
+✅ Loaded 353 risk warnings and disclaimers
+✅ Loaded 116 community engagement posts
+✅ Loaded 650 trader testimonials
+INFO:__main__:🤖 Options Trading University Bot starting...
+INFO:__main__:Bot configured to post to channel: @your_channel_username
+INFO:price_simulator:Using fallback price for USD/JPY
+INFO:market_analyzer:Market sentiment: SPY +2.08% over 5 days
+INFO:__main__:Generated trade for USD/JPY: +2860.35 USD (+263.60%)
+/app/image_generator_enhanced.py:527: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  plt.tight_layout()
+INFO:__main__:Saved trade image: trade_images/19116AF0.png
+INFO:__main__:Trade saved to database with TXID: 19116AF0
+INFO:httpx:HTTP Request: POST https://api.telegram.org/botyour_bot_token_here/sendPhoto "HTTP/1.1 404 Not Found"
+ERROR:__main__:Error posting trade: Not Found
+Traceback (most recent call last):
+  File "/app/profit_flex_bot.py", line 270, in post_trade
+    await bot.send_photo(
+  File "/usr/local/lib/python3.11/site-packages/telegram/_bot.py", line 1401, in send_photo
+    return await self._send_message(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/telegram/_bot.py", line 744, in _send_message
+    result = await self._post(
+             ^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/telegram/_bot.py", line 622, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/telegram/_bot.py", line 651, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/telegram/request/_baserequest.py", line 200, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/telegram/request/_baserequest.py", line 379, in _request_wrapper
+    raise InvalidToken(message)
+telegram.error.InvalidToken: Not Found
+INFO:__main__:Waiting 12 minutes before next trade...
