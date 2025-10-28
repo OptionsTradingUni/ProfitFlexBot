@@ -247,7 +247,7 @@ def get_themed_analysis(theme="crypto"):
         "commodities": COMMODITIES_ANALYSES,
         "sector": SECTOR_ANALYSES
     }
-    return random.choice(themed_analyses.get(theme, ALL_ANALYSES))
+    return random.choice(themed_analyses.get(theme, ALL_ANALSES))
 
 __all__ = ['ALL_ANALYSES', 'get_random_analysis', 'get_themed_analysis', 'generate_symbol_analysis']
 
