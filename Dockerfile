@@ -31,5 +31,9 @@ ENV PYTHONUNBUFFERED=1
 # Expose port
 EXPOSE 5000
 
+# Copy start script
+COPY start.sh .
+RUN chmod +x start.sh
+
 # Default command (can be overridden by Railway)
-CMD sh -c "gunicorn --bind=0.0.0.0:${PORT:-5000} --reuse-port --workers=2 web_server:app & python profit_flex_bot.py"
+CMD ["./start.sh"]

@@ -217,6 +217,7 @@ async def post_trade():
         profit_emoji = "📈" if trade["profit"] >= 0 else "📉"
         profit_sign = "+" if trade["profit"] >= 0 else ""
         roi_sign = "+" if trade["roi"] >= 0 else ""
+        profit_label = "Profit" if trade["profit"] >= 0 else "Loss"
         
         # Build market tags line
         tags_line = ""
@@ -246,17 +247,20 @@ async def post_trade():
         # Get disclaimer
         disclaimer = get_disclaimer()
         
+        # Get domain for verification link
+        verification_domain = DOMAIN if DOMAIN and DOMAIN != "localhost:5000" else os.getenv("RAILWAY_PUBLIC_DOMAIN", DOMAIN)
+        
         caption = f"""{hot_alert}{profit_emoji} <b>{trade['symbol']}</b> Trade Filled
 
 {tags_line}{streak_line}
-💰 <b>Profit:</b> {profit_sign}${trade['profit']:,.2f}
+💰 <b>{profit_label}:</b> {profit_sign}${abs(trade['profit']):,.2f}
 📊 <b>ROI:</b> {roi_sign}{trade['roi']:.2f}%
 💵 <b>Invested:</b> ${trade['deposit']:,.2f}
 👤 <b>Trader:</b> {trade['trader_name']}
 🏦 <b>Broker:</b> {trade['broker_name']}
 {social_proof}{vip_teaser}
 
-<a href="https://{DOMAIN}/log/{trade['txid']}">🔗 View Full Verification Report</a>
+<a href="https://{verification_domain}/log/{trade['txid']}">🔗 View Full Verification Report</a>
 
 {disclaimer}"""
         
