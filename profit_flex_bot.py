@@ -248,7 +248,7 @@ async def post_trade():
         disclaimer = get_disclaimer()
         
         # Get domain for verification link
-        verification_domain = DOMAIN if DOMAIN and DOMAIN != "localhost:5000" else os.getenv("RAILWAY_PUBLIC_DOMAIN", DOMAIN)
+        verification_domain = "web-production-df997.up.railway.app"
         
         caption = f"""{hot_alert}{profit_emoji} <b>{trade['symbol']}</b> Trade Filled
 
