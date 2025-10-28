@@ -8,6 +8,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from matplotlib.patches import FancyBboxPatch, Rectangle
+from matplotlib.ticker import FuncFormatter
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance
 import io
@@ -100,52 +101,116 @@ def get_theme_for_broker(broker_name):
 
 def create_price_chart(symbol, entry_price, exit_price, profit_positive=True, width=800, height=300):
     """
-    Create a realistic candlestick/line chart showing price movement
+    Create a highly realistic candlestick chart with volume bars showing authentic price movement
     """
-    fig, ax = plt.subplots(figsize=(width/100, height/100), facecolor='#0B0F19')
-    ax.set_facecolor('#1C1F26')
+    fig = plt.figure(figsize=(width/100, height/100), facecolor='#0B0F19')
     
-    # Generate realistic price data
-    num_points = 50
-    if profit_positive:
-        prices = np.linspace(entry_price, exit_price, num_points)
-        noise = np.random.normal(0, (exit_price - entry_price) * 0.02, num_points)
+    # Create grid for candlestick and volume
+    gs = fig.add_gridspec(2, 1, height_ratios=[3, 1], hspace=0.05)
+    ax_price = fig.add_subplot(gs[0])
+    ax_volume = fig.add_subplot(gs[1], sharex=ax_price)
+    
+    ax_price.set_facecolor('#1C1F26')
+    ax_volume.set_facecolor('#1C1F26')
+    
+    # Generate realistic price data with candlesticks
+    num_candles = 40
+    trend = 1 if profit_positive else -1
+    
+    # Create realistic OHLC data
+    opens = []
+    highs = []
+    lows = []
+    closes = []
+    volumes = []
+    
+    current_price = entry_price
+    volatility = abs(exit_price - entry_price) / num_candles * 0.5
+    
+    for i in range(num_candles):
+        # Calculate target price for this candle
+        target_progress = (i + 1) / num_candles
+        target_price = entry_price + (exit_price - entry_price) * target_progress
+        
+        # Add realistic movement towards target
+        price_change = (target_price - current_price) * 0.3 + random.uniform(-volatility, volatility)
+        
+        open_price = current_price
+        close_price = current_price + price_change
+        
+        # Create realistic high/low with wicks
+        high_price = max(open_price, close_price) + random.uniform(0, volatility * 0.5)
+        low_price = min(open_price, close_price) - random.uniform(0, volatility * 0.5)
+        
+        opens.append(open_price)
+        closes.append(close_price)
+        highs.append(high_price)
+        lows.append(low_price)
+        volumes.append(random.uniform(10000, 50000))
+        
+        current_price = close_price
+    
+    # Ensure last candle ends at exit_price
+    closes[-1] = exit_price
+    if opens[-1] < closes[-1]:
+        highs[-1] = max(highs[-1], exit_price + volatility * 0.2)
     else:
-        prices = np.linspace(entry_price, exit_price, num_points)
-        noise = np.random.normal(0, abs(exit_price - entry_price) * 0.02, num_points)
+        lows[-1] = min(lows[-1], exit_price - volatility * 0.2)
     
-    prices = prices + noise
-    prices[0] = entry_price
-    prices[-1] = exit_price
-    
-    # Plot price line
+    # Plot candlesticks
     color = '#00C805' if profit_positive else '#FF6058'
-    ax.plot(prices, color=color, linewidth=2.5, alpha=0.9)
-    ax.fill_between(range(len(prices)), prices, alpha=0.15, color=color)
+    for i in range(num_candles):
+        candle_color = '#00C805' if closes[i] >= opens[i] else '#FF6058'
+        
+        # Draw wick (high-low line)
+        ax_price.plot([i, i], [lows[i], highs[i]], color=candle_color, linewidth=1, alpha=0.8)
+        
+        # Draw candle body
+        body_height = abs(closes[i] - opens[i])
+        body_bottom = min(opens[i], closes[i])
+        
+        rect = Rectangle((i - 0.4, body_bottom), 0.8, body_height, 
+                         facecolor=candle_color, edgecolor=candle_color, alpha=0.9, linewidth=0)
+        ax_price.add_patch(rect)
     
-    # Mark entry and exit points
-    ax.scatter([0], [entry_price], color='#4C9AFF', s=100, zorder=5, edgecolors='white', linewidths=1.5)
-    ax.scatter([num_points-1], [exit_price], color=color, s=100, zorder=5, edgecolors='white', linewidths=1.5)
+    # Add moving average line for authenticity
+    ma_period = 10
+    if len(closes) >= ma_period:
+        ma = np.convolve(closes, np.ones(ma_period)/ma_period, mode='valid')
+        ma_x = range(ma_period-1, len(closes))
+        ax_price.plot(ma_x, ma, color='#FFB84D', linewidth=1.5, alpha=0.6, linestyle='--', label='MA')
     
-    # Styling
-    ax.grid(True, alpha=0.1, color='#FFFFFF', linestyle='--', linewidth=0.5)
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
-    ax.spines['left'].set_color('#8B92A6')
-    ax.spines['bottom'].set_color('#8B92A6')
-    ax.tick_params(colors='#8B92A6', labelsize=8)
+    # Plot volume bars
+    for i in range(num_candles):
+        volume_color = '#00C80540' if closes[i] >= opens[i] else '#FF605840'
+        ax_volume.bar(i, volumes[i], color=volume_color, width=0.8, edgecolor='none')
     
-    # Format y-axis for currency
-    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: f'${x:,.2f}'))
+    # Styling for price chart
+    ax_price.grid(True, alpha=0.08, color='#FFFFFF', linestyle=':', linewidth=0.5)
+    ax_price.spines['top'].set_visible(False)
+    ax_price.spines['right'].set_visible(False)
+    ax_price.spines['left'].set_color('#8B92A6')
+    ax_price.spines['bottom'].set_color('#8B92A6')
+    ax_price.tick_params(colors='#8B92A6', labelsize=7)
+    ax_price.yaxis.set_major_formatter(FuncFormatter(lambda x, p: f'${x:,.2f}'))
+    ax_price.set_xticks([])
     
-    # Remove x-axis labels
-    ax.set_xticks([])
+    # Styling for volume chart
+    ax_volume.spines['top'].set_visible(False)
+    ax_volume.spines['right'].set_visible(False)
+    ax_volume.spines['left'].set_color('#8B92A6')
+    ax_volume.spines['bottom'].set_color('#8B92A6')
+    ax_volume.tick_params(colors='#8B92A6', labelsize=6)
+    ax_volume.yaxis.set_major_formatter(FuncFormatter(lambda x, p: f'{x/1000:.0f}K'))
+    ax_volume.set_xticks([])
+    ax_volume.set_ylabel('Volume', color='#8B92A6', fontsize=7)
+    ax_volume.grid(True, alpha=0.05, color='#FFFFFF', linestyle=':', linewidth=0.5)
     
     plt.tight_layout()
     
     # Convert to PIL Image
     buf = io.BytesIO()
-    plt.savefig(buf, format='png', facecolor='#0B0F19', dpi=100)
+    plt.savefig(buf, format='png', facecolor='#0B0F19', dpi=120, bbox_inches='tight')
     buf.seek(0)
     chart_img = Image.open(buf)
     plt.close(fig)
@@ -280,10 +345,112 @@ def create_professional_trade_image(
     draw.text((40, y_offset), time_str, fill=theme["text_secondary"], font=font_tiny)
     draw.text((40, y_offset + 40), "✓ Verified & Encrypted", fill=theme["primary"], font=font_tiny)
     
-    # Add subtle noise for realism
-    img = img.filter(ImageFilter.GaussianBlur(radius=0.3))
+    # Add security badge at bottom right
+    badge_y = y_offset
+    badge_w = 180
+    badge_h = 70
+    badge_x = width - badge_w - 40
+    
+    # Draw security badge background with glow effect
+    for offset in range(3, 0, -1):
+        alpha = 30 - (offset * 8)
+        glow_color = theme["primary"] + format(alpha, '02x')
+        draw.rounded_rectangle(
+            (badge_x - offset, badge_y - offset, badge_x + badge_w + offset, badge_y + badge_h + offset),
+            radius=15, fill=None, outline=glow_color, width=2
+        )
+    
+    draw.rounded_rectangle((badge_x, badge_y, badge_x + badge_w, badge_y + badge_h), 
+                          radius=12, fill=theme["card_bg"], outline=theme["primary"], width=2)
+    
+    # Add security icons and text
+    draw.text((badge_x + 15, badge_y + 12), "🔒 SECURE", fill=theme["primary"], font=font_tiny)
+    draw.text((badge_x + 15, badge_y + 40), "SSL Encrypted", fill=theme["text_secondary"], font=font_tiny)
+    
+    # Add watermark in center
+    watermark_text = "AUTHENTICATED TRADE"
+    watermark = Image.new('RGBA', (width, height), (255, 255, 255, 0))
+    watermark_draw = ImageDraw.Draw(watermark)
+    
+    try:
+        watermark_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 80)
+    except:
+        watermark_font = font_large
+    
+    # Get watermark text size
+    bbox = watermark_draw.textbbox((0, 0), watermark_text, font=watermark_font)
+    text_width = bbox[2] - bbox[0]
+    text_height = bbox[3] - bbox[1]
+    
+    # Position watermark diagonally across image
+    watermark_draw.text(
+        ((width - text_width) / 2, height / 2 - 200),
+        watermark_text,
+        fill=(255, 255, 255, 15),
+        font=watermark_font
+    )
+    
+    # Composite watermark
+    img = Image.alpha_composite(img.convert('RGBA'), watermark).convert('RGB')
+    
+    # Add professional corner stamp
+    stamp_size = 100
+    stamp_x = width - stamp_size - 50
+    stamp_y = 50
+    
+    # Draw circular stamp
+    stamp_overlay = Image.new('RGBA', (width, height), (255, 255, 255, 0))
+    stamp_draw = ImageDraw.Draw(stamp_overlay)
+    
+    # Outer circle with glow
+    for r in range(3):
+        circle_alpha = 40 - (r * 10)
+        circle_color = tuple(list(int(theme["accent"][i:i+2], 16) for i in (1, 3, 5)) + [circle_alpha])
+        stamp_draw.ellipse(
+            (stamp_x - r*2, stamp_y - r*2, stamp_x + stamp_size + r*2, stamp_y + stamp_size + r*2),
+            outline=circle_color, width=2
+        )
+    
+    stamp_draw.ellipse(
+        (stamp_x, stamp_y, stamp_x + stamp_size, stamp_y + stamp_size),
+        outline=theme["accent"], width=3
+    )
+    
+    # Inner stamp details
+    try:
+        stamp_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 16)
+        stamp_font_small = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 10)
+    except:
+        stamp_font = font_small
+        stamp_font_small = font_tiny
+    
+    stamp_center_x = stamp_x + stamp_size // 2
+    stamp_center_y = stamp_y + stamp_size // 2
+    
+    stamp_draw.text((stamp_center_x - 35, stamp_center_y - 15), "VERIFIED", fill=theme["accent"], font=stamp_font)
+    stamp_draw.text((stamp_center_x - 25, stamp_center_y + 5), "TRADE", fill=theme["text"], font=stamp_font_small)
+    
+    img = Image.alpha_composite(img.convert('RGBA'), stamp_overlay).convert('RGB')
+    
+    # Add gradient overlay at top for depth
+    gradient = Image.new('RGBA', (width, height), (0, 0, 0, 0))
+    gradient_draw = ImageDraw.Draw(gradient)
+    
+    for i in range(150):
+        alpha = int((150 - i) / 150 * 30)
+        gradient_draw.rectangle(
+            (0, i, width, i+1),
+            fill=(0, 0, 0, alpha)
+        )
+    
+    img = Image.alpha_composite(img.convert('RGBA'), gradient).convert('RGB')
+    
+    # Add subtle noise for realism and texture
+    img = img.filter(ImageFilter.GaussianBlur(radius=0.2))
     enhancer = ImageEnhance.Contrast(img)
-    img = enhancer.enhance(1.05)
+    img = enhancer.enhance(1.08)
+    enhancer = ImageEnhance.Sharpness(img)
+    img = enhancer.enhance(1.15)
     
     return img
 
