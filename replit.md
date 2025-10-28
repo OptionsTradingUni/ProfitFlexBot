@@ -92,6 +92,8 @@ A professional Telegram bot that delivers highly authentic trading insights for 
 - 🚀 **Ready for Railway**: Full deployment configuration included
 
 ## Recent Changes
+- **2025-10-28**: 💰 **BIGGER PROFITS** - Simulated trades now show $1k-$15k profits (most common), up to $50k for big winners
+- **2025-10-28**: ⏱️ **FASTER POSTING** - Changed from 30-120 min to 5-30 min intervals (5, 10, 15 mins most common for active feed)
 - **2025-10-28**: 🎓 **RENAMED TO OPTIONS TRADING UNIVERSITY** - Bot renamed from "Profit Flex Bot" for professional branding
 - **2025-10-28**: 👋 **WELCOME MESSAGE** - Auto-sends welcome to new members, deletes after 10 seconds to keep group clean
 - **2025-10-28**: 🔥 **MARKET ANALYZER** - Bot now analyzes real market conditions (SPY sentiment) and generates contextual trades!

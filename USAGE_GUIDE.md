@@ -50,10 +50,12 @@ If you want to post trades to a Telegram channel:
 3. Run: `python profit_flex_bot.py`
 
 The bot will:
-- Generate realistic trades every 30-120 minutes
+- Generate realistic trades every 5-30 minutes (weighted: 5, 10, 15 mins most common)
 - Post ultra-realistic mobile screenshots to your channel
 - Include verification links to your website
+- Show impressive profits: $1k-$15k most common, up to $50k for big wins
 - Support admin commands: /stats, /pause, /resume, /setinterval, /testpost
+- Send welcome messages to new members (auto-deletes after 10 seconds)
 
 ## Features
 
