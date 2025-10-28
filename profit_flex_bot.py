@@ -1,5 +1,5 @@
 """
-Profit Flex Bot - Main Bot Logic
+Options Trading University Bot - Main Bot Logic
 Generates and posts realistic trading insights with professional images
 """
 
@@ -243,7 +243,7 @@ async def post_trade():
 
 async def run_bot():
     """Main bot loop - posts trades periodically"""
-    logger.info("🤖 Profit Flex Bot starting...")
+    logger.info("🤖 Options Trading University Bot starting...")
     
     if not TELEGRAM_BOT_TOKEN or not CHANNEL_ID:
         logger.error("Missing TELEGRAM_BOT_TOKEN or CHANNEL_ID. Please set them in environment variables.")
@@ -309,7 +309,7 @@ async def handle_stats_command(update, context):
         uptime = datetime.now(timezone.utc) - bot_state["start_time"]
         uptime_hours = uptime.total_seconds() / 3600
         
-        stats_message = f"""📊 <b>Profit Flex Bot Statistics</b>
+        stats_message = f"""📊 <b>Options Trading University Statistics</b>
 
 🔢 <b>Total Trades:</b> {total_trades}
 💰 <b>Total Profit:</b> ${total_profit:,.2f}
@@ -376,17 +376,44 @@ async def handle_testpost_command(update, context):
     else:
         await update.message.reply_text("❌ Failed to post test trade. Check logs for details.")
 
+async def handle_new_member(update, context):
+    """Send welcome message to new members and delete after 10 seconds"""
+    try:
+        for member in update.message.new_chat_members:
+            welcome_message = f"""👋 Welcome to Options Trading University, {member.first_name}!
+
+📚 Here you'll learn from real trading examples
+📊 We share authentic market analysis and trade insights
+💰 Track profitable strategies from experienced traders
+
+Get ready to elevate your trading knowledge! 🚀"""
+            
+            sent_message = await update.message.reply_text(welcome_message)
+            
+            await asyncio.sleep(10)
+            
+            try:
+                await sent_message.delete()
+                await update.message.delete()
+                logger.info(f"Welcome message sent and deleted for {member.first_name}")
+            except Exception as e:
+                logger.warning(f"Could not delete welcome message: {e}")
+                
+    except Exception as e:
+        logger.error(f"Error in welcome handler: {e}")
+
 def setup_admin_handlers(application):
     """Setup admin command handlers"""
-    from telegram.ext import CommandHandler
+    from telegram.ext import CommandHandler, MessageHandler, filters
     
     application.add_handler(CommandHandler("stats", handle_stats_command))
     application.add_handler(CommandHandler("pause", handle_pause_command))
     application.add_handler(CommandHandler("resume", handle_resume_command))
     application.add_handler(CommandHandler("setinterval", handle_setinterval_command))
     application.add_handler(CommandHandler("testpost", handle_testpost_command))
+    application.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, handle_new_member))
     
-    logger.info("Admin command handlers registered")
+    logger.info("Admin command handlers and welcome message registered")
 
 def main():
     """Entry point"""

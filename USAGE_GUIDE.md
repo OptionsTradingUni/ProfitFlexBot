@@ -1,4 +1,4 @@
-# Profit Flex Bot - Usage Guide
+# Options Trading University - Usage Guide
 
 ## Quick Start (Test Mode - No Telegram Required)
 
@@ -122,7 +122,7 @@ The bot will:
 
 ## Files Overview
 
-- `profit_flex_bot.py` - Main Telegram bot (optional)
+- `profit_flex_bot.py` - Main Telegram bot (optional, renamed to Options Trading University)
 - `test_trade_generator.py` - Local testing without Telegram ⭐ **USE THIS**
 - `web_server.py` - Flask web server for verification pages
 - `price_simulator.py` - Market data with caching & fallbacks

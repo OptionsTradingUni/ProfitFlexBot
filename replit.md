@@ -1,4 +1,4 @@
-# Profit Flex Bot - Ultra-Realistic Mobile Trading App Screenshot Generator
+# Options Trading University - Ultra-Realistic Mobile Trading App Screenshot Generator
 
 ## Overview
 A professional Telegram bot that delivers highly authentic trading insights for stocks, crypto, and meme coins. Features ultra-realistic mobile app-style screenshots that look like actual phone captures from Robinhood, Coinbase, Webull, and other trading platforms. Includes custom meme coin NIKY with simulated price action.
