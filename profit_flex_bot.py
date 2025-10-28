@@ -20,7 +20,8 @@ load_dotenv()
 from models import engine, trade_logs
 from traders import get_random_trader
 from verification_texts import generate_txid
-from image_generator import create_professional_trade_image, save_trade_image
+from image_generator_enhanced import create_ultra_realistic_mobile_trade_screenshot, save_trade_image
+from price_simulator import price_sim
 
 # Configure logging
 logging.basicConfig(
@@ -47,6 +48,7 @@ CRYPTO_SYMBOLS = [
 ]
 
 MEME_COINS = [
+    "NIKY/USD", "NIKY/USD", "NIKY/USD",
     "PEPE/USD", "SHIB/USD", "DOGE/USD", "FLOKI/USD", "BONK/USD",
     "WIF/USD", "MEME/USD", "WOJAK/USD", "SPONGE/USD"
 ]
@@ -78,69 +80,43 @@ REASONS = [
 ]
 
 def generate_trade_data():
-    """Generate realistic simulated trade data"""
+    """Generate realistic simulated trade data using real market prices"""
     
-    # Select asset type
     asset_type = random.choices(
         ["stock", "crypto", "meme"],
-        weights=[50, 35, 15],
+        weights=[40, 35, 25],
         k=1
     )[0]
     
-    if asset_type == "stock":
-        symbol = random.choice(STOCK_SYMBOLS)
-        broker = random.choice(["Robinhood", "Webull", "Charles Schwab", "Fidelity", "E*TRADE"])
-        entry_price = random.uniform(10, 500)
-    elif asset_type == "crypto":
-        symbol = random.choice(CRYPTO_SYMBOLS)
-        broker = random.choice(["Binance", "Coinbase", "Kraken", "Crypto.com"])
-        entry_price = random.uniform(0.01, 50000)
-    else:
-        symbol = random.choice(MEME_COINS)
-        broker = random.choice(["Binance", "Coinbase", "Uniswap"])
-        entry_price = random.uniform(0.000001, 0.1)
-    
-    # Generate trade parameters
-    deposit = random.choice([100, 150, 200, 250, 300, 350, 400, 500, 750, 1000, 1500, 2000, 3000, 5000])
-    
-    # ROI ranges: 70% profitable, 30% loss
-    if random.random() < 0.70:
-        roi = random.uniform(2, 150)
-    else:
-        roi = random.uniform(-50, -2)
-    
-    profit = deposit * (roi / 100)
-    quantity = deposit / entry_price
-    exit_price = entry_price * (1 + roi / 100)
-    
-    # Add realistic variance
-    commission = deposit * random.uniform(0.0001, 0.002)
-    slippage = random.uniform(0.001, 0.05)
+    trade_data = price_sim.generate_realistic_trade(asset_type=asset_type)
     
     trader_name = get_random_trader()
-    direction = "BUY"
     strategy = random.choice(STRATEGIES)
     reason = random.choice(REASONS)
     txid = generate_txid()
     
+    commission = trade_data['deposit'] * random.uniform(0.0001, 0.002)
+    slippage = random.uniform(0.001, 0.05)
+    
     return {
-        "symbol": symbol,
-        "broker_name": broker,
+        "symbol": trade_data['symbol'],
+        "broker_name": trade_data['broker'],
         "trader_name": trader_name,
-        "direction": direction,
-        "entry_price": entry_price,
-        "exit_price": exit_price,
-        "quantity": quantity,
-        "deposit": deposit,
-        "profit": profit,
-        "roi": roi,
+        "direction": trade_data['direction'],
+        "entry_price": trade_data['entry_price'],
+        "exit_price": trade_data['exit_price'],
+        "quantity": trade_data['quantity'],
+        "deposit": trade_data['deposit'],
+        "profit": trade_data['profit'],
+        "roi": trade_data['roi'],
         "commission": commission,
         "slippage": slippage,
         "strategy": strategy,
         "reason": reason,
         "txid": txid,
         "status": "FILLED",
-        "timestamp": datetime.now(timezone.utc)
+        "timestamp": datetime.now(timezone.utc),
+        "portfolio_value": random.uniform(50000, 500000)
     }
 
 async def post_trade():
@@ -159,8 +135,8 @@ async def post_trade():
         trade = generate_trade_data()
         logger.info(f"Generated trade for {trade['symbol']}: {trade['profit']:+.2f} USD ({trade['roi']:+.2f}%)")
         
-        # Create professional image
-        img = create_professional_trade_image(
+        # Create ultra-realistic mobile app screenshot
+        img = create_ultra_realistic_mobile_trade_screenshot(
             symbol=trade["symbol"],
             broker_name=trade["broker_name"],
             trader_name=trade["trader_name"],
@@ -172,7 +148,9 @@ async def post_trade():
             roi=trade["roi"],
             deposit=trade["deposit"],
             txid=trade["txid"],
-            timestamp=trade["timestamp"]
+            timestamp=trade["timestamp"],
+            portfolio_value=trade.get("portfolio_value"),
+            device_type=random.choice(["ios", "android"])
         )
         
         # Save image

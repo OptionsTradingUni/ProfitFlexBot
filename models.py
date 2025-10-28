@@ -78,4 +78,4 @@ trade_logs = Table(
     Column("posted_at", DateTime, default=datetime.utcnow),
 )
 
-metadata.create_all(engine)
+metadata.create_all(engine, checkfirst=True)
