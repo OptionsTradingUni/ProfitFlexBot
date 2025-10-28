@@ -27,10 +27,9 @@ RUN mkdir -p trade_images
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
-ENV PORT=5000
 
 # Expose port
 EXPOSE 5000
 
 # Default command (can be overridden by Railway)
-CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:$PORT --reuse-port --workers 2 web_server:app & python profit_flex_bot.py"]
+CMD sh -c "gunicorn --bind=0.0.0.0:${PORT:-5000} --reuse-port --workers=2 web_server:app & python profit_flex_bot.py"
