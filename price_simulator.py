@@ -151,7 +151,10 @@ class PriceSimulator:
                 'stock': ['AAPL', 'TSLA', 'NVDA', 'MSFT', 'GOOGL', 'AMZN', 'META', 'SPY', 'QQQ'],
                 'crypto': ['BTC', 'ETH', 'SOL', 'DOGE', 'SHIB', 'PEPE', 'AVAX', 'MATIC'],
                 'meme': ['NIKY', 'NIKY', 'NIKY'],
-                'option': ['AAPL 180C', 'TSLA 260C', 'NVDA 900C', 'SPY 510P', 'QQQ 460C']
+                'option': ['AAPL 180C', 'TSLA 260C', 'NVDA 900C', 'SPY 510P', 'QQQ 460C'],
+                'futures': ['/ES', '/NQ', '/CL', '/GC', '/SI', '/ZB'],
+                'forex': ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'NZD/USD'],
+                'crypto_multi': ['BTC', 'ETH', 'SOL', 'AVAX']
             }
             
             if asset_type is None:
@@ -199,10 +202,13 @@ class PriceSimulator:
         quantity = deposit / entry_price
         
         brokers = {
-            'stock': ['Robinhood', 'Webull', 'Charles Schwab', 'Fidelity', 'TD Ameritrade'],
-            'crypto': ['Binance', 'Coinbase', 'Kraken', 'Crypto.com'],
+            'stock': ['Robinhood', 'Webull', 'Charles Schwab', 'Fidelity', 'TD Ameritrade', 'E*TRADE'],
+            'crypto': ['Binance', 'Coinbase', 'Kraken', 'Crypto.com', 'eToro'],
             'meme': ['Binance', 'Uniswap', 'PancakeSwap', 'Coinbase'],
-            'option': ['Robinhood', 'Webull', 'TD Ameritrade', 'IBKR']
+            'option': ['Robinhood', 'Webull', 'TD Ameritrade', 'Interactive Brokers', 'E*TRADE'],
+            'futures': ['Interactive Brokers', 'TD Ameritrade', 'E*TRADE', 'TradeStation'],
+            'forex': ['Interactive Brokers', 'eToro', 'OANDA', 'Forex.com'],
+            'crypto_multi': ['Kraken', 'Binance', 'Coinbase', 'eToro']
         }
         
         broker = random.choice(brokers.get(asset_type, brokers['stock']))

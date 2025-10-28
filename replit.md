@@ -23,7 +23,7 @@ A professional Telegram bot that delivers highly authentic trading insights for 
 └── .env                         # Environment configuration
 ```
 
-## Ultra-Realistic Mobile Features (NEW)
+## Ultra-Realistic Mobile Features
 - 📱 **Authentic Mobile UI**: iOS/Android status bars with battery, signal strength, time
 - 🔥 **Social Proof**: Live watching counts (20k watching), trending badges, community followers, win streaks
 - 📊 **Advanced Technical Indicators**: RSI, MACD histogram, Bollinger Bands, Fibonacci retracement
@@ -36,17 +36,72 @@ A professional Telegram bot that delivers highly authentic trading insights for 
 - 🎨 **Screenshot Style**: Rounded corners, mobile navigation bar, authentic app design
 - 🪙 **NIKY Custom Meme Coin**: Simulated price movements with realistic volatility
 
+## Broker Themes (EXPANDED)
+- 🟢 **Robinhood**: Classic dark mode with green accents
+- 🔵 **Webull**: Professional blue theme
+- 🟡 **Binance**: Gold and black crypto exchange style
+- 🔷 **Coinbase**: Modern blue crypto platform
+- 🟣 **E*TRADE**: Purple professional trading platform
+- 🟢 **TD Ameritrade**: Green institutional broker theme
+- 🔵 **Interactive Brokers**: Professional blue trading platform
+- 🟣 **Kraken**: Purple crypto exchange styling
+- 🟢 **eToro**: Teal social trading platform style
+
+## Interactive & Social Elements (NEW)
+- 📤 **Share Button**: Realistic social sharing interface
+- 📋 **Copy Trade Button**: Social trading copy functionality
+- ❤️ **Likes & Comments**: Engagement metrics display
+- 👥 **Follower Notifications**: "23 followers copied this trade"
+- 📅 **Daily P/L Summary**: Total profit/loss for the day with trade count
+
+## Verification & Compliance (NEW)
+- 🔐 **QR Code Verification**: Visual QR codes for trade verification
+- ⛓️ **Blockchain Hashes**: For crypto trades with transaction IDs
+- 📜 **SEC Disclaimers**: Legal compliance text
+- ✅ **Audit Badges**: "Audited by PricewaterhouseCoopers"
+
+## Asset Type Support (NEW)
+- 📊 **Options**: Greeks display (Delta, Gamma, Theta, Vega), IV, strike prices, expiry
+- 📈 **Futures**: Contract details, tick size, margin requirements
+- 💱 **Forex**: Pip values, spreads, leverage information
+- ₿ **Multi-Exchange Crypto**: Arbitrage opportunities across exchanges
+
+## Screenshot Styles (NEW)
+- 📱 **Mobile Trade View**: Full mobile app screenshot with all features
+- 🔔 **Push Notifications**: iOS/Android notification style screenshots
+- 🎯 **Annotated Screenshots**: Arrows, text bubbles, highlighted areas
+
+## Admin Dashboard Commands (NEW)
+- `/stats` - Show comprehensive bot statistics (trades, profit, win rate, uptime)
+- `/pause` - Temporarily stop posting trades
+- `/resume` - Resume posting trades
+- `/setinterval <minutes>` - Adjust posting frequency (5-1440 minutes)
+- `/testpost` - Generate and post a test trade immediately
+
 ## Standard Features
 - ✅ Real-time market prices for stocks, crypto, options (yfinance, CoinGecko)
 - ✅ Realistic candlestick charts with volume indicators
 - ✅ 10,000+ authentic trader profiles
-- ✅ Multiple broker themes (Robinhood, Webull, Binance, Coinbase, Schwab, Fidelity)
 - ✅ PostgreSQL database for trade logs
 - ✅ Web interface for trade verification
 - ✅ Automated posting to Telegram channels
 
+## Railway Deployment (NEW)
+- 🐳 **Dockerfile**: Multi-stage build with Python 3.11
+- 📋 **Procfile**: Separate web and worker processes
+- 🚀 **Ready for Railway**: Full deployment configuration included
+
 ## Recent Changes
-- **2025-10-28**: MAJOR UPDATE - Ultra-realistic mobile app screenshot generator
+- **2025-10-28**: MAJOR FEATURE UPDATE - Added 5 new broker themes (E*TRADE, TD Ameritrade, Interactive Brokers, Kraken, eToro)
+- **2025-10-28**: NEW - Interactive social elements (Share/Copy Trade buttons, likes, comments, follower copy notifications)
+- **2025-10-28**: NEW - Verification layers (QR codes, blockchain hashes, SEC disclaimers, audit badges)
+- **2025-10-28**: NEW - Asset type support (Options with Greeks, Futures, Forex, Multi-exchange crypto)
+- **2025-10-28**: NEW - Notification-style screenshots (iOS/Android push notification mockups)
+- **2025-10-28**: NEW - Screenshot annotations (arrows, text bubbles, highlights)
+- **2025-10-28**: NEW - Admin dashboard commands (/stats, /pause, /resume, /setinterval, /testpost)
+- **2025-10-28**: NEW - Daily P/L summary display
+- **2025-10-28**: NEW - Railway deployment configuration (Dockerfile, Procfile)
+- **2025-10-28**: Ultra-realistic mobile app screenshot generator with advanced features
 - **2025-10-28**: Added NIKY custom meme coin with price simulator
 - **2025-10-28**: Integrated real market prices for stocks/crypto via yfinance & CoinGecko
 - **2025-10-28**: Implemented RSI, MACD, Bollinger Bands technical indicators

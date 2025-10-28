@@ -62,6 +62,56 @@ BROKER_THEMES = {
         "text_secondary": "#8A919E",
         "profit": "#05B169",
         "loss": "#DF5F67"
+    },
+    "etrade": {
+        "bg": "#1A1D28",
+        "card_bg": "#252932",
+        "primary": "#7C3AED",
+        "accent": "#A78BFA",
+        "text": "#FFFFFF",
+        "text_secondary": "#9CA3AF",
+        "profit": "#10B981",
+        "loss": "#EF4444"
+    },
+    "td_ameritrade": {
+        "bg": "#0D1B2A",
+        "card_bg": "#1B263B",
+        "primary": "#43B02A",
+        "accent": "#5CDB3A",
+        "text": "#FFFFFF",
+        "text_secondary": "#9DB4C6",
+        "profit": "#43B02A",
+        "loss": "#DC2626"
+    },
+    "interactive_brokers": {
+        "bg": "#0F1419",
+        "card_bg": "#1A2028",
+        "primary": "#0095FF",
+        "accent": "#00C3FF",
+        "text": "#FFFFFF",
+        "text_secondary": "#7A8896",
+        "profit": "#00A86B",
+        "loss": "#DC143C"
+    },
+    "kraken": {
+        "bg": "#0A0D14",
+        "card_bg": "#151822",
+        "primary": "#5741D9",
+        "accent": "#7B68EE",
+        "text": "#F8F8FF",
+        "text_secondary": "#8E92A5",
+        "profit": "#26A69A",
+        "loss": "#F44336"
+    },
+    "etoro": {
+        "bg": "#1B2126",
+        "card_bg": "#2A2F36",
+        "primary": "#39D0B0",
+        "accent": "#5FEDD3",
+        "text": "#FFFFFF",
+        "text_secondary": "#A8ADB5",
+        "profit": "#39D0B0",
+        "loss": "#FF5B5B"
     }
 }
 
@@ -75,6 +125,16 @@ def get_theme_for_broker(broker_name):
         return BROKER_THEMES["binance"]
     elif "coinbase" in broker_lower:
         return BROKER_THEMES["coinbase"]
+    elif "etrade" in broker_lower or "e*trade" in broker_lower or "e_trade" in broker_lower:
+        return BROKER_THEMES["etrade"]
+    elif "td" in broker_lower and "ameritrade" in broker_lower:
+        return BROKER_THEMES["td_ameritrade"]
+    elif "interactive" in broker_lower and "broker" in broker_lower:
+        return BROKER_THEMES["interactive_brokers"]
+    elif "kraken" in broker_lower:
+        return BROKER_THEMES["kraken"]
+    elif "etoro" in broker_lower:
+        return BROKER_THEMES["etoro"]
     else:
         return BROKER_THEMES["robinhood"]
 
@@ -190,6 +250,129 @@ def generate_leaderboard_data():
         "win_rate": f"✅ Win rate: {win_rate}% (Last 30 days)",
         "profit_streak": f"📈 {profit_streak_days}-day profit streak"
     }
+
+def draw_interactive_buttons(draw, width, y_pos, theme, font_small):
+    """Draw Share and Copy Trade buttons with social stats"""
+    button_width = (width - 120) // 2
+    button_height = 55
+    
+    draw.rounded_rectangle((40, y_pos, 40 + button_width, y_pos + button_height), 
+                          radius=12, fill=theme["primary"] + "40", outline=theme["primary"], width=2)
+    draw.text((40 + button_width//2 - 30, y_pos + 18), "📤 Share", fill=theme["primary"], font=font_small)
+    
+    copy_x = 40 + button_width + 40
+    draw.rounded_rectangle((copy_x, y_pos, copy_x + button_width, y_pos + button_height), 
+                          radius=12, fill=theme["accent"] + "40", outline=theme["accent"], width=2)
+    draw.text((copy_x + button_width//2 - 60, y_pos + 18), "📋 Copy Trade", fill=theme["accent"], font=font_small)
+    
+    likes = random.randint(100, 5000)
+    comments = random.randint(10, 500)
+    social_y = y_pos + button_height + 15
+    draw.text((40, social_y), f"❤️ {likes} likes  💬 {comments} comments", 
+              fill=theme["text_secondary"], font=font_small)
+    
+    copy_count = random.randint(5, 200)
+    draw.text((40, social_y + 30), f"👥 {copy_count} followers copied this trade", 
+              fill=theme["profit"], font=font_small)
+    
+    return social_y + 60
+
+def generate_qr_code_placeholder(draw, x, y, size, theme):
+    """Draw a simple QR code placeholder"""
+    draw.rounded_rectangle((x, y, x + size, y + size), radius=5, fill="#FFFFFF", outline=theme["text_secondary"], width=2)
+    cell_size = size // 10
+    for i in range(2, 8):
+        for j in range(2, 8):
+            if random.random() > 0.5:
+                draw.rectangle((x + i * cell_size, y + j * cell_size, 
+                              x + (i+1) * cell_size, y + (j+1) * cell_size), fill="#000000")
+
+def draw_verification_layer(draw, width, y_pos, symbol, txid, theme, font_small, font_tiny):
+    """Draw verification elements: QR code, blockchain hash, SEC disclaimer"""
+    draw.rounded_rectangle((40, y_pos, width - 40, y_pos + 180), radius=15, fill=theme["card_bg"])
+    
+    draw.text((60, y_pos + 15), "🔐 Trade Verification", fill=theme["primary"], font=font_small)
+    
+    qr_size = 80
+    qr_x = width - 40 - qr_size - 20
+    generate_qr_code_placeholder(draw, qr_x, y_pos + 50, qr_size, theme)
+    draw.text((qr_x + 10, y_pos + qr_size + 55), "Scan to verify", fill=theme["text_secondary"], font=font_tiny)
+    
+    if "BTC" in symbol or "ETH" in symbol or any(crypto in symbol for crypto in ["DOGE", "SOL", "ADA", "NIKY"]):
+        blockchain_hash = f"0x{''.join(random.choices('0123456789abcdef', k=40))}"
+        draw.text((60, y_pos + 50), "Blockchain Hash:", fill=theme["text_secondary"], font=font_tiny)
+        draw.text((60, y_pos + 70), blockchain_hash[:20] + "...", fill=theme["accent"], font=font_tiny)
+    
+    draw.text((60, y_pos + 100), "✅ Audited by PricewaterhouseCoopers", fill=theme["profit"], font=font_tiny)
+    
+    draw.text((60, y_pos + 135), "SEC Disclaimer: Trading involves risk. Past performance does not", 
+              fill=theme["text_secondary"], font=font_tiny)
+    draw.text((60, y_pos + 152), "guarantee future results. Not financial advice.", 
+              fill=theme["text_secondary"], font=font_tiny)
+    
+    return y_pos + 200
+
+def generate_options_greeks():
+    """Generate realistic options Greeks"""
+    return {
+        "delta": round(random.uniform(0.3, 0.9), 3),
+        "gamma": round(random.uniform(0.001, 0.05), 4),
+        "theta": round(random.uniform(-0.5, -0.05), 3),
+        "vega": round(random.uniform(0.05, 0.3), 3),
+        "iv": round(random.uniform(20, 80), 1),
+        "strike": None,
+        "expiry": None
+    }
+
+def draw_asset_type_specific_info(draw, y_pos, width, asset_type, symbol, theme, font_small, font_tiny):
+    """Draw asset-specific information (Options Greeks, Futures specs, Forex pips)"""
+    draw.rounded_rectangle((40, y_pos, width - 40, y_pos + 140), radius=15, fill=theme["card_bg"])
+    
+    if asset_type == "option":
+        greeks = generate_options_greeks()
+        strike = random.randint(100, 500)
+        expiry = (datetime.now() + timedelta(days=random.randint(7, 90))).strftime("%b %d, %Y")
+        
+        draw.text((60, y_pos + 15), f"📊 Options Contract: {symbol} ${strike} Call", 
+                  fill=theme["primary"], font=font_small)
+        draw.text((60, y_pos + 45), f"Expiry: {expiry}", fill=theme["text_secondary"], font=font_tiny)
+        draw.text((60, y_pos + 70), f"Delta: {greeks['delta']}  Gamma: {greeks['gamma']}", 
+                  fill=theme["text"], font=font_tiny)
+        draw.text((60, y_pos + 90), f"Theta: {greeks['theta']}  Vega: {greeks['vega']}", 
+                  fill=theme["text"], font=font_tiny)
+        draw.text((60, y_pos + 110), f"IV: {greeks['iv']}%", fill=theme["accent"], font=font_tiny)
+        
+    elif asset_type == "futures":
+        contract_month = (datetime.now() + timedelta(days=random.randint(30, 180))).strftime("%b %Y")
+        tick_size = random.choice([0.25, 0.5, 1.0, 5.0])
+        
+        draw.text((60, y_pos + 15), f"📈 Futures Contract: {symbol} {contract_month}", 
+                  fill=theme["primary"], font=font_small)
+        draw.text((60, y_pos + 45), f"Contract Size: 1 contract", fill=theme["text_secondary"], font=font_tiny)
+        draw.text((60, y_pos + 70), f"Tick Size: ${tick_size}", fill=theme["text"], font=font_tiny)
+        draw.text((60, y_pos + 90), f"Margin Required: ${random.randint(2000, 10000):,}", 
+                  fill=theme["text"], font=font_tiny)
+        
+    elif asset_type == "forex":
+        pip_value = round(random.uniform(5, 15), 2)
+        spread = round(random.uniform(0.5, 3.0), 1)
+        
+        draw.text((60, y_pos + 15), f"💱 Forex Pair: {symbol}", fill=theme["primary"], font=font_small)
+        draw.text((60, y_pos + 45), f"Pip Value: ${pip_value}", fill=theme["text"], font=font_tiny)
+        draw.text((60, y_pos + 70), f"Spread: {spread} pips", fill=theme["text_secondary"], font=font_tiny)
+        draw.text((60, y_pos + 90), f"Leverage: 1:{random.choice([50, 100, 200])}", 
+                  fill=theme["accent"], font=font_tiny)
+    
+    elif asset_type == "crypto_multi":
+        exchanges = ["Binance", "Coinbase Pro", "Kraken", "FTX"]
+        selected_exchanges = random.sample(exchanges, 2)
+        
+        draw.text((60, y_pos + 15), f"₿ Multi-Exchange: {symbol}", fill=theme["primary"], font=font_small)
+        draw.text((60, y_pos + 45), f"Exchanges: {', '.join(selected_exchanges)}", 
+                  fill=theme["text_secondary"], font=font_tiny)
+        draw.text((60, y_pos + 70), "Arbitrage opportunity detected", fill=theme["profit"], font=font_tiny)
+    
+    return y_pos + 160
 
 def calculate_technical_indicators(entry_price, exit_price, num_candles=40):
     """Calculate RSI, MACD, Bollinger Bands for realistic display"""
@@ -365,7 +548,8 @@ def create_ultra_realistic_mobile_trade_screenshot(
     txid,
     timestamp=None,
     portfolio_value=None,
-    device_type="ios"
+    device_type="ios",
+    asset_type="stock"
 ):
     """
     Generate ultra-realistic mobile app screenshot with all enhancements
@@ -497,6 +681,19 @@ def create_ultra_realistic_mobile_trade_screenshot(
     
     y_offset += 240
     
+    # Add asset-specific information for special asset types
+    if asset_type in ["option", "futures", "forex", "crypto_multi"]:
+        y_offset = draw_asset_type_specific_info(draw, y_offset, width, asset_type, symbol, theme, font_small, font_tiny)
+        y_offset += 20
+    
+    # Add interactive buttons and social elements
+    y_offset = draw_interactive_buttons(draw, width, y_offset, theme, font_small)
+    y_offset += 20
+    
+    # Add verification layer
+    y_offset = draw_verification_layer(draw, width, y_offset, symbol, txid, theme, font_small, font_tiny)
+    y_offset += 20
+    
     sentiment_color = theme["profit"] if market_data["sentiment"] == "Bullish" else theme["loss"]
     volatility_colors = {"Low": theme["profit"], "Medium": theme["accent"], "High": theme["loss"], "Extreme": "#FF0000"}
     
@@ -537,6 +734,112 @@ def save_trade_image(img, txid):
     filename = f"trade_images/{txid}.png"
     img.save(filename, quality=95, optimize=True)
     return filename
+
+def create_notification_style_screenshot(symbol, profit, roi, broker_name="Robinhood", device_type="ios"):
+    """Create a push notification style screenshot"""
+    theme = get_theme_for_broker(broker_name)
+    
+    width, height = 800, 200
+    img = Image.new('RGB', (width, height), (240, 240, 245) if device_type == "ios" else (255, 255, 255))
+    draw = ImageDraw.Draw(img)
+    
+    try:
+        font_app = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 14)
+        font_title = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 18)
+        font_message = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 16)
+        font_time = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 12)
+    except:
+        font_app = font_title = font_message = font_time = ImageFont.load_default()
+    
+    notif_bg = "#FFFFFF" if device_type == "ios" else "#F5F5F5"
+    draw.rounded_rectangle((10, 10, width - 10, height - 10), radius=15, fill=notif_bg)
+    
+    if device_type == "ios":
+        draw.rounded_rectangle((10, 10, width - 10, height - 10), radius=15, outline="#E0E0E0", width=1)
+    
+    draw.text((25, 20), broker_name.upper(), fill="#666666", font=font_app)
+    
+    current_time = datetime.now().strftime("%I:%M %p")
+    time_bbox = draw.textbbox((0, 0), current_time, font=font_time)
+    time_width = time_bbox[2] - time_bbox[0]
+    draw.text((width - time_width - 25, 20), current_time, fill="#999999", font=font_time)
+    
+    profit_sign = "+" if profit >= 0 else ""
+    profit_color = theme["profit"] if profit >= 0 else theme["loss"]
+    
+    title_text = f"Your {symbol} position {profit_sign}${profit:,.2f}"
+    draw.text((25, 50), title_text, fill=profit_color, font=font_title)
+    
+    message_text = f"Return: {profit_sign}{roi:.2f}% • Tap to view details"
+    draw.text((25, 80), message_text, fill="#333333", font=font_message)
+    
+    action_y = height - 50
+    draw.text((25, action_y), "View", fill=theme["primary"], font=font_message)
+    draw.text((100, action_y), "Close", fill="#999999", font=font_message)
+    
+    return img
+
+def draw_annotations(img, annotations_list):
+    """Add arrows and text bubbles to highlight key areas"""
+    draw = ImageDraw.Draw(img)
+    width, height = img.size
+    
+    try:
+        font_annotation = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 20)
+    except:
+        font_annotation = ImageFont.load_default()
+    
+    for annotation in annotations_list:
+        ann_type = annotation.get("type", "arrow")
+        x, y = annotation.get("position", (width//2, height//2))
+        text = annotation.get("text", "")
+        color = annotation.get("color", "#FFD700")
+        
+        if ann_type == "arrow":
+            arrow_points = [
+                (x, y),
+                (x + 50, y - 30),
+                (x + 45, y - 30),
+                (x + 45, y - 60),
+                (x + 55, y - 60),
+                (x + 55, y - 30),
+                (x + 50, y - 30)
+            ]
+            draw.polygon(arrow_points, fill=color + "CC")
+            if text:
+                draw.text((x + 70, y - 70), text, fill=color, font=font_annotation)
+        
+        elif ann_type == "bubble":
+            bubble_width = 250
+            bubble_height = 80
+            draw.rounded_rectangle((x, y, x + bubble_width, y + bubble_height), 
+                                  radius=15, fill=color + "DD", outline=color, width=3)
+            draw.text((x + 15, y + 15), text, fill="#000000", font=font_annotation)
+        
+        elif ann_type == "highlight":
+            box_width, box_height = annotation.get("size", (200, 100))
+            draw.rounded_rectangle((x, y, x + box_width, y + box_height), 
+                                  radius=10, outline=color, width=5)
+    
+    return img
+
+def add_daily_pl_summary(draw, y_pos, width, total_daily_pl, theme, font_title, font_small):
+    """Add total P/L for the day display"""
+    draw.rounded_rectangle((40, y_pos, width - 40, y_pos + 120), radius=15, fill=theme["card_bg"])
+    
+    draw.text((60, y_pos + 15), "📅 Today's Performance", fill=theme["text"], font=font_title)
+    
+    pl_color = theme["profit"] if total_daily_pl >= 0 else theme["loss"]
+    pl_sign = "+" if total_daily_pl >= 0 else ""
+    
+    draw.text((60, y_pos + 55), f"{pl_sign}${total_daily_pl:,.2f}", fill=pl_color, font=font_title)
+    
+    trades_count = random.randint(3, 15)
+    win_rate = random.randint(60, 90)
+    draw.text((60, y_pos + 90), f"{trades_count} trades • {win_rate}% win rate", 
+              fill=theme["text_secondary"], font=font_small)
+    
+    return y_pos + 140
 
 def create_professional_trade_image(*args, **kwargs):
     """Wrapper for compatibility - routes to ultra realistic version"""

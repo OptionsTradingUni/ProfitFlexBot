@@ -83,8 +83,8 @@ def generate_trade_data():
     """Generate realistic simulated trade data using real market prices"""
     
     asset_type = random.choices(
-        ["stock", "crypto", "meme"],
-        weights=[40, 35, 25],
+        ["stock", "crypto", "meme", "option", "futures", "forex", "crypto_multi"],
+        weights=[30, 25, 15, 10, 10, 5, 5],
         k=1
     )[0]
     
@@ -116,7 +116,8 @@ def generate_trade_data():
         "txid": txid,
         "status": "FILLED",
         "timestamp": datetime.now(timezone.utc),
-        "portfolio_value": random.uniform(50000, 500000)
+        "portfolio_value": random.uniform(50000, 500000),
+        "asset_type": asset_type
     }
 
 async def post_trade():
@@ -150,7 +151,8 @@ async def post_trade():
             txid=trade["txid"],
             timestamp=trade["timestamp"],
             portfolio_value=trade.get("portfolio_value"),
-            device_type=random.choice(["ios", "android"])
+            device_type=random.choice(["ios", "android"]),
+            asset_type=trade.get("asset_type", "stock")
         )
         
         # Save image
@@ -226,18 +228,25 @@ async def run_bot():
     else:
         logger.info(f"Bot configured to post to channel: {CHANNEL_ID}")
     
-    post_count = 0
     while True:
         try:
+            # Check if bot is paused
+            if bot_state["paused"]:
+                logger.info("Bot is paused. Waiting...")
+                await asyncio.sleep(60)
+                continue
+            
             # Post a trade
             success = await post_trade()
             
             if success:
-                post_count += 1
-                logger.info(f"Total trades posted: {post_count}")
+                bot_state["total_posts"] += 1
+                logger.info(f"Total trades posted: {bot_state['total_posts']}")
             
-            # Wait between 30-120 minutes for realistic posting
-            wait_time = random.randint(1800, 7200)
+            # Wait between configured intervals
+            min_seconds = bot_state["post_interval_min"] * 60
+            max_seconds = bot_state["post_interval_max"] * 60
+            wait_time = random.randint(min_seconds, max_seconds)
             logger.info(f"Waiting {wait_time//60} minutes before next trade...")
             await asyncio.sleep(wait_time)
             
@@ -247,6 +256,113 @@ async def run_bot():
         except Exception as e:
             logger.error(f"Error in main loop: {e}", exc_info=True)
             await asyncio.sleep(300)
+
+# Bot control state
+bot_state = {
+    "paused": False,
+    "post_interval_min": 30,
+    "post_interval_max": 120,
+    "total_posts": 0,
+    "start_time": datetime.now(timezone.utc)
+}
+
+async def handle_stats_command(update, context):
+    """Show bot statistics"""
+    from sqlalchemy import select, func
+    
+    try:
+        with engine.connect() as conn:
+            total_trades = conn.execute(select(func.count()).select_from(trade_logs)).scalar() or 0
+            total_profit = conn.execute(select(func.sum(trade_logs.c.profit))).scalar() or 0
+            avg_roi = conn.execute(select(func.avg(trade_logs.c.roi))).scalar() or 0
+            
+            winning_trades = conn.execute(
+                select(func.count()).select_from(trade_logs).where(trade_logs.c.profit > 0)
+            ).scalar() or 0
+            
+            win_rate = (winning_trades / total_trades * 100) if total_trades and total_trades > 0 else 0
+        
+        uptime = datetime.now(timezone.utc) - bot_state["start_time"]
+        uptime_hours = uptime.total_seconds() / 3600
+        
+        stats_message = f"""📊 <b>Profit Flex Bot Statistics</b>
+
+🔢 <b>Total Trades:</b> {total_trades}
+💰 <b>Total Profit:</b> ${total_profit:,.2f}
+📈 <b>Average ROI:</b> {avg_roi:.2f}%
+✅ <b>Win Rate:</b> {win_rate:.1f}%
+⏱️ <b>Uptime:</b> {uptime_hours:.1f} hours
+📤 <b>Posts Today:</b> {bot_state['total_posts']}
+⏸️ <b>Status:</b> {'Paused' if bot_state['paused'] else 'Active'}
+🕐 <b>Post Interval:</b> {bot_state['post_interval_min']}-{bot_state['post_interval_max']} minutes
+"""
+        
+        await update.message.reply_text(stats_message, parse_mode='HTML')
+        logger.info("Stats command executed")
+        
+    except Exception as e:
+        logger.error(f"Error in stats command: {e}")
+        await update.message.reply_text("Error retrieving statistics")
+
+async def handle_pause_command(update, context):
+    """Pause bot posting"""
+    bot_state["paused"] = True
+    await update.message.reply_text("⏸️ Bot paused. Use /resume to continue posting.")
+    logger.info("Bot paused via command")
+
+async def handle_resume_command(update, context):
+    """Resume bot posting"""
+    bot_state["paused"] = False
+    await update.message.reply_text("▶️ Bot resumed. Posting will continue.")
+    logger.info("Bot resumed via command")
+
+async def handle_setinterval_command(update, context):
+    """Set posting interval in minutes"""
+    try:
+        if not context.args or len(context.args) != 1:
+            await update.message.reply_text("Usage: /setinterval <minutes>\nExample: /setinterval 60")
+            return
+        
+        minutes = int(context.args[0])
+        
+        if minutes < 5 or minutes > 1440:
+            await update.message.reply_text("⚠️ Interval must be between 5 and 1440 minutes (24 hours)")
+            return
+        
+        bot_state["post_interval_min"] = minutes
+        bot_state["post_interval_max"] = minutes + 30
+        
+        await update.message.reply_text(f"✅ Posting interval set to {minutes}-{minutes+30} minutes")
+        logger.info(f"Posting interval changed to {minutes} minutes")
+        
+    except ValueError:
+        await update.message.reply_text("⚠️ Please provide a valid number")
+    except Exception as e:
+        logger.error(f"Error setting interval: {e}")
+        await update.message.reply_text("Error setting interval")
+
+async def handle_testpost_command(update, context):
+    """Generate and post a test trade immediately"""
+    await update.message.reply_text("🧪 Generating test trade...")
+    
+    success = await post_trade()
+    
+    if success:
+        await update.message.reply_text("✅ Test trade posted successfully!")
+    else:
+        await update.message.reply_text("❌ Failed to post test trade. Check logs for details.")
+
+def setup_admin_handlers(application):
+    """Setup admin command handlers"""
+    from telegram.ext import CommandHandler
+    
+    application.add_handler(CommandHandler("stats", handle_stats_command))
+    application.add_handler(CommandHandler("pause", handle_pause_command))
+    application.add_handler(CommandHandler("resume", handle_resume_command))
+    application.add_handler(CommandHandler("setinterval", handle_setinterval_command))
+    application.add_handler(CommandHandler("testpost", handle_testpost_command))
+    
+    logger.info("Admin command handlers registered")
 
 def main():
     """Entry point"""
