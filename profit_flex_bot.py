@@ -207,6 +207,7 @@ async def post_trade():
                 exit_price=trade["exit_price"],
                 commission=trade["commission"],
                 slippage=trade["slippage"],
+                asset_type=trade["asset_type"],
                 posted_at=trade["timestamp"]
             )
             conn.execute(stmt)
@@ -489,6 +490,13 @@ async def run_bot():
         logger.info("Use the web interface at /api/recent to view generated trades.")
     else:
         logger.info(f"Bot configured to post to channel: {CHANNEL_ID}")
+        logger.info("🚀 Posting initial trade on bot startup...")
+        initial_success = await post_trade()
+        if initial_success:
+            logger.info("✅ Initial startup trade posted successfully!")
+            bot_state["total_posts"] += 1
+        else:
+            logger.warning("⚠️ Failed to post initial startup trade")
     
     post_count = 0
     
@@ -535,17 +543,15 @@ async def run_bot():
                 logger.info(f"Total trades posted: {bot_state['total_posts']}")
             
             # Wait between configured intervals with weighted selection
-            # Common intervals: 5, 10, 15 mins (very common), 20 mins (common), 25-30 mins (less common)
+            # User requested intervals: 5-10, 15, 30, 40, 60 minutes
             interval_choices = [
-                (5, 0.20),
-                (7, 0.10),
-                (10, 0.25),
-                (12, 0.10),
-                (15, 0.20),
-                (18, 0.05),
-                (20, 0.05),
-                (25, 0.03),
-                (30, 0.02)
+                (5, 0.15),
+                (7, 0.15),
+                (10, 0.20),
+                (15, 0.25),
+                (30, 0.15),
+                (40, 0.05),
+                (60, 0.05)
             ]
             
             wait_minutes = random.choices(

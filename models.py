@@ -95,6 +95,7 @@ trade_logs = Table(
     Column("total_value_exit", Float),
     Column("commission", Float),
     Column("slippage", Float),
+    Column("asset_type", String(20), default="stock"),
     Column("posted_at", DateTime, default=datetime.utcnow),
 )
 

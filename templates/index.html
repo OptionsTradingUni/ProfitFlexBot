@@ -747,14 +747,24 @@
     function renderTrades() {
       let filtered = allTrades;
       
-      // Apply filter
+      // Apply filter based on actual asset_type from database
       if (currentFilter !== 'all') {
         filtered = filtered.filter(t => {
-          const symbol = t.symbol.toLowerCase();
-          if (currentFilter === 'crypto') return symbol.includes('btc') || symbol.includes('eth') || symbol.includes('sol') || symbol.includes('usd') || t.broker_name.toLowerCase().includes('coin');
-          if (currentFilter === 'forex') return symbol.includes('/');
-          if (currentFilter === 'options') return t.broker_name.toLowerCase().includes('option') || symbol.includes('call') || symbol.includes('put');
-          if (currentFilter === 'stock') return !symbol.includes('/') && !symbol.includes('btc') && !symbol.includes('eth');
+          const assetType = (t.asset_type || 'stock').toLowerCase();
+          
+          if (currentFilter === 'stock') {
+            return assetType === 'stock';
+          }
+          if (currentFilter === 'crypto') {
+            return assetType === 'crypto' || assetType === 'meme' || assetType === 'crypto_multi';
+          }
+          if (currentFilter === 'forex') {
+            return assetType === 'forex';
+          }
+          if (currentFilter === 'options') {
+            return assetType === 'option';
+          }
+          
           return true;
         });
       }

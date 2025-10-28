@@ -90,7 +90,7 @@ def recent_trade_logs():
             query = text("""
                 SELECT txid, symbol, trader_name,
                        COALESCE(broker_name, 'Verified Exchange') AS broker_name,
-                       profit, roi, posted_at
+                       profit, roi, posted_at, asset_type
                 FROM trade_logs
                 ORDER BY posted_at DESC
                 LIMIT 200
@@ -111,7 +111,8 @@ def recent_trade_logs():
                 "profit": float(row["profit"] or 0),
                 "roi": float(row["roi"] or 0),
                 "posted_at": posted_at.isoformat() if posted_at else None,
-                "time_ago": time_ago(posted_at) if posted_at else "Unknown time"
+                "time_ago": time_ago(posted_at) if posted_at else "Unknown time",
+                "asset_type": row.get("asset_type", "stock")
             })
 
         return jsonify(data), 200
