@@ -27,9 +27,9 @@ CORS(app)
 
 @app.route("/")
 def home():
-    """Basic health check route."""
+    """Homepage with live trading feed."""
     logger.info("Root URL '/' accessed successfully.")
-    return "✅ Profit Flex Bot Web Server is running"
+    return render_template("index.html")
 
 # API route for last 200 trades
 @app.route("/api/recent200")

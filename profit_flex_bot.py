@@ -22,6 +22,7 @@ from traders import get_unique_trader
 from verification_texts import generate_unique_txid
 from image_generator_enhanced import create_ultra_realistic_mobile_trade_screenshot, save_trade_image
 from price_simulator import price_sim
+from market_analyzer import market_analyzer
 
 # Configure logging
 logging.basicConfig(
@@ -92,7 +93,19 @@ def generate_trade_data():
     
     trader_name = get_unique_trader()
     strategy = random.choice(STRATEGIES)
-    reason = random.choice(REASONS)
+    
+    # Get market-aware reasoning
+    sentiment = market_analyzer.get_market_sentiment()
+    reason = market_analyzer.generate_market_reasoning(
+        trade_data['symbol'], 
+        trade_data['direction'],
+        sentiment
+    )
+    
+    # Get market tags
+    market_tags = market_analyzer.get_market_tags()
+    win_streak = market_analyzer.get_win_streak_tag()
+    
     txid = generate_unique_txid(engine)
     
     commission = trade_data['deposit'] * random.uniform(0.0001, 0.002)
@@ -190,8 +203,19 @@ async def post_trade():
         profit_sign = "+" if trade["profit"] >= 0 else ""
         roi_sign = "+" if trade["roi"] >= 0 else ""
         
+        # Build market tags line
+        tags_line = ""
+        if market_tags:
+            tags_line = "   ".join(market_tags) + "\n"
+        
+        # Build win streak line
+        streak_line = ""
+        if win_streak and trade["profit"] > 0:
+            streak_line = f"{win_streak}\n"
+        
         caption = f"""{profit_emoji} <b>{trade['symbol']}</b> Trade Filled
 
+{tags_line}{streak_line}
 💰 <b>Profit:</b> {profit_sign}${trade['profit']:,.2f}
 📊 <b>ROI:</b> {roi_sign}{trade['roi']:.2f}%
 💵 <b>Invested:</b> ${trade['deposit']:,.2f}

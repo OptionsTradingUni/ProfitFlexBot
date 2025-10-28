@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profit Flex Bot - Live Trading Signals</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0e1a;
+      color: #e5e7eb;
+      min-height: 100vh;
+    }
+    
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 60px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation: rotate 30s linear infinite;
+    }
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .hero-content { position: relative; z-index: 1; }
+    .hero h1 {
+      font-size: 48px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 16px;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .hero p {
+      font-size: 20px;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 30px;
+    }
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+    .stat {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      padding: 20px 30px;
+      border-radius: 12px;
+      min-width: 150px;
+    }
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .stat-label {
+      font-size: 14px;
+      color: rgba(255,255,255,0.8);
+      margin-top: 5px;
+    }
+    
+    /* Trades Section */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .section-header h2 {
+      font-size: 36px;
+      font-weight: 700;
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+    }
+    .section-header p {
+      font-size: 16px;
+      color: #94a3b8;
+    }
+    
+    /* Trade Cards Grid */
+    .trades-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+    .trade-card {
+      background: linear-gradient(145deg, #1a1f2e 0%, #2d3748 100%);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 25px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .trade-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+      border-color: rgba(102, 126, 234, 0.5);
+    }
+    .trade-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .symbol {
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .time-ago {
+      font-size: 12px;
+      color: #64748b;
+    }
+    .broker {
+      font-size: 14px;
+      color: #94a3b8;
+      margin-bottom: 15px;
+    }
+    .profit-display {
+      font-size: 32px;
+      font-weight: 800;
+      margin: 15px 0;
+    }
+    .profit-positive { color: #22c55e; }
+    .profit-negative { color: #ef4444; }
+    .roi {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    .trader-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #cbd5e1;
+      margin-bottom: 15px;
+    }
+    .view-btn {
+      display: inline-block;
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+    .view-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: #64748b;
+    }
+    .spinner {
+      border: 3px solid rgba(102, 126, 234, 0.1);
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Footer */
+    .footer {
+      background: #0f172a;
+      text-align: center;
+      padding: 40px 20px;
+      margin-top: 60px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .footer p {
+      color: #64748b;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero Section -->
+  <div class="hero">
+    <div class="hero-content">
+      <h1>🚀 Profit Flex Bot</h1>
+      <p>Real-time trading signals from verified traders across stocks, crypto, and options</p>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-value" id="total-trades">-</div>
+          <div class="stat-label">Total Trades</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="total-profit">-</div>
+          <div class="stat-label">Total Profit</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="win-rate">-</div>
+          <div class="stat-label">Win Rate</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trades Section -->
+  <div class="container">
+    <div class="section-header">
+      <h2>📊 Recent Community Trades</h2>
+      <p>Live verification from 10,000+ professional traders</p>
+    </div>
+    
+    <div id="trades-container">
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading recent trades...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>✅ Verified & secured by Options Trading University</p>
+    <p style="margin-top: 10px; font-size: 12px;">All trades are verified through broker APIs and blockchain confirmations</p>
+  </div>
+
+  <script>
+    // Fetch and display stats
+    fetch('/api/recent')
+      .then(res => res.json())
+      .then(data => {
+        if (!data || data.length === 0) {
+          document.getElementById('trades-container').innerHTML = '<div class="loading"><p>No trades available yet.</p></div>';
+          return;
+        }
+
+        // Calculate stats
+        const totalTrades = data.length;
+        const totalProfit = data.reduce((sum, t) => sum + t.profit, 0);
+        const winningTrades = data.filter(t => t.profit > 0).length;
+        const winRate = ((winningTrades / totalTrades) * 100).toFixed(1);
+
+        // Update hero stats
+        document.getElementById('total-trades').textContent = totalTrades;
+        document.getElementById('total-profit').textContent = '$' + totalProfit.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        document.getElementById('win-rate').textContent = winRate + '%';
+
+        // Display trades
+        const container = document.getElementById('trades-container');
+        container.innerHTML = '<div class="trades-grid">' + data.slice(0, 50).map(trade => `
+          <div class="trade-card" onclick="window.location.href='/log/${trade.txid}'">
+            <div class="trade-header">
+              <div class="symbol">${trade.symbol}</div>
+              <div class="time-ago">${trade.time_ago}</div>
+            </div>
+            <div class="broker">🏦 ${trade.broker_name}</div>
+            <div class="profit-display ${trade.profit >= 0 ? 'profit-positive' : 'profit-negative'}">
+              ${trade.profit >= 0 ? '+' : ''}$${Math.abs(trade.profit).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+            </div>
+            <div class="roi ${trade.profit >= 0 ? 'profit-positive' : 'profit-negative'}">
+              ${trade.roi >= 0 ? '+' : ''}${trade.roi.toFixed(2)}% ROI
+            </div>
+            <div class="trader-name">
+              👤 ${trade.trader_name}
+            </div>
+            <a href="/log/${trade.txid}" class="view-btn" onclick="event.stopPropagation();">📊 View Full Report</a>
+          </div>
+        `).join('') + '</div>';
+      })
+      .catch(err => {
+        console.error('Error loading trades:', err);
+        document.getElementById('trades-container').innerHTML = '<div class="loading"><p>Unable to load trades. Please try again later.</p></div>';
+      });
+  </script>
+</body>
+</html>
