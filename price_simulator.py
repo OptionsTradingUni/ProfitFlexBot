@@ -229,7 +229,22 @@ class PriceSimulator:
             direction = "BUY"
             entry_price = current_price / (1 + roi / 100)
             exit_price = current_price
-            profit_amount = random.uniform(100, 50000)
+            
+            profit_weights = [
+                (500, 10000, 0.15),
+                (1000, 5000, 0.35),
+                (2000, 15000, 0.25),
+                (5000, 25000, 0.15),
+                (10000, 50000, 0.10)
+            ]
+            
+            min_profit, max_profit, _ = random.choices(
+                profit_weights,
+                weights=[w for _, _, w in profit_weights],
+                k=1
+            )[0]
+            
+            profit_amount = random.uniform(min_profit, max_profit)
             deposit = profit_amount / (roi / 100)
         else:
             roi = random.uniform(-5, -50)

@@ -269,11 +269,28 @@ async def run_bot():
                 bot_state["total_posts"] += 1
                 logger.info(f"Total trades posted: {bot_state['total_posts']}")
             
-            # Wait between configured intervals
-            min_seconds = bot_state["post_interval_min"] * 60
-            max_seconds = bot_state["post_interval_max"] * 60
-            wait_time = random.randint(min_seconds, max_seconds)
-            logger.info(f"Waiting {wait_time//60} minutes before next trade...")
+            # Wait between configured intervals with weighted selection
+            # Common intervals: 5, 10, 15 mins (very common), 20 mins (common), 25-30 mins (less common)
+            interval_choices = [
+                (5, 0.20),
+                (7, 0.10),
+                (10, 0.25),
+                (12, 0.10),
+                (15, 0.20),
+                (18, 0.05),
+                (20, 0.05),
+                (25, 0.03),
+                (30, 0.02)
+            ]
+            
+            wait_minutes = random.choices(
+                [mins for mins, _ in interval_choices],
+                weights=[weight for _, weight in interval_choices],
+                k=1
+            )[0]
+            
+            wait_time = wait_minutes * 60
+            logger.info(f"Waiting {wait_minutes} minutes before next trade...")
             await asyncio.sleep(wait_time)
             
         except KeyboardInterrupt:
@@ -286,8 +303,8 @@ async def run_bot():
 # Bot control state
 bot_state = {
     "paused": False,
-    "post_interval_min": 30,
-    "post_interval_max": 120,
+    "post_interval_min": 5,
+    "post_interval_max": 30,
     "total_posts": 0,
     "start_time": datetime.now(timezone.utc)
 }
