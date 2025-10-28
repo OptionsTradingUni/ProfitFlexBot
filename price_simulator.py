@@ -316,3 +316,4 @@ class PriceSimulator:
         }
 
 price_sim = PriceSimulator()
+
