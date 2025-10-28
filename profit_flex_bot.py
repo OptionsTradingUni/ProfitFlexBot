@@ -18,8 +18,8 @@ load_dotenv()
 
 # Import modules
 from models import engine, trade_logs
-from traders import get_random_trader
-from verification_texts import generate_txid
+from traders import get_unique_trader
+from verification_texts import generate_unique_txid
 from image_generator_enhanced import create_ultra_realistic_mobile_trade_screenshot, save_trade_image
 from price_simulator import price_sim
 
@@ -90,10 +90,10 @@ def generate_trade_data():
     
     trade_data = price_sim.generate_realistic_trade(asset_type=asset_type)
     
-    trader_name = get_random_trader()
+    trader_name = get_unique_trader()
     strategy = random.choice(STRATEGIES)
     reason = random.choice(REASONS)
-    txid = generate_txid()
+    txid = generate_unique_txid(engine)
     
     commission = trade_data['deposit'] * random.uniform(0.0001, 0.002)
     slippage = random.uniform(0.001, 0.05)

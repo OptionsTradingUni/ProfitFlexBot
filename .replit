@@ -26,13 +26,13 @@ args = "Telegram Bot"
 name = "Web Server"
 author = "agent"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "gunicorn --bind 0.0.0.0:5000 --reuse-port --workers 2 web_server:app"
-waitForPort = 5000
-
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "gunicorn --bind=0.0.0.0:5000 --reuse-port --workers=2 web_server:app"
+waitForPort = 5000
 
 [[workflows.workflow]]
 name = "Telegram Bot"
@@ -48,3 +48,7 @@ outputType = "console"
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[[ports]]
+localPort = 44217
+externalPort = 3000

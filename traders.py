@@ -602,12 +602,38 @@ RANKING_TRADERS = [
 
 import random
 
+class TraderManager:
+    """Manages trader selection without repetition until pool is exhausted"""
+    def __init__(self):
+        self.all_traders = [(username, name) for username, name in RANKING_TRADERS]
+        self.available_traders = self.all_traders.copy()
+        random.shuffle(self.available_traders)
+    
+    def get_unique_trader(self):
+        """Get a unique trader from the pool, reset when exhausted"""
+        if not self.available_traders:
+            self.available_traders = self.all_traders.copy()
+            random.shuffle(self.available_traders)
+        
+        username, name = self.available_traders.pop()
+        return name
+    
+    def get_remaining_count(self):
+        """Get count of remaining traders in current pool"""
+        return len(self.available_traders)
+
+trader_manager = TraderManager()
+
 def get_random_trader():
-    """Get a random trader name from the pool"""
+    """Get a random trader name from the pool (legacy function)"""
     return random.choice([name for _, name in RANKING_TRADERS])
+
+def get_unique_trader():
+    """Get a unique trader name without immediate repeats"""
+    return trader_manager.get_unique_trader()
 
 if __name__ == "__main__":
     print(f"Total traders in pool: {len(RANKING_TRADERS)}")
     print("Sample traders:")
     for i in range(10):
-        print(f"{i+1}. {get_random_trader()}")
+        print(f"{i+1}. {get_unique_trader()}")
