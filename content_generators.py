@@ -79,38 +79,38 @@ SUCCESS_STORIES = [
 ]
 
 SOCIAL_PROOF_TEMPLATES = [
-    "👥 **{count} traders** are watching this setup live right now",
-    "🔥 **{count} members** joined in the last hour",
-    "📊 **{count} people** are copying this trade",
-    "⚡ **{count} notifications** sent in the last 5 minutes",
-    "🎯 **{count} traders** hit their profit targets today",
-    "💰 Community made **${amount:,}** in total profits this week",
-    "📈 **{percent}%** of members are profitable this month",
-    "🏆 Top trader this week: **+{percent}%** returns",
-    "🚀 **{count} consecutive wins** by top performer today",
-    "💎 VIP members accessed **{count} exclusive signals** this week"
+    "👥 <b>{count} traders</b> are watching this setup live right now",
+    "🔥 <b>{count} members</b> joined in the last hour",
+    "📊 <b>{count} people</b> are copying this trade",
+    "⚡ <b>{count} notifications</b> sent in the last 5 minutes",
+    "🎯 <b>{count} traders</b> hit their profit targets today",
+    "💰 Community made <b>${amount:,}</b> in total profits this week",
+    "📈 <b>{percent}%</b> of members are profitable this month",
+    "🏆 Top trader this week: <b>+{percent}%</b> returns",
+    "🚀 <b>{count} consecutive wins</b> by top performer today",
+    "💎 VIP members accessed <b>{count} exclusive signals</b> this week"
 ]
 
 HOT_ALERTS = [
-    "🚨 **BREAKING:** High-probability setup detected on {symbol}",
-    "⚡ **URGENT:** Major support level tested on {symbol} - Watch closely!",
-    "🔥 **ALERT:** Unusual volume spike detected - {symbol} moving!",
-    "💎 **OPPORTUNITY:** Golden crossover forming on {symbol}",
-    "🎯 **SETUP:** Perfect risk/reward ratio developing on {symbol}",
-    "⚠️ **WATCH:** {symbol} approaching key resistance level",
-    "🚀 **MOMENTUM:** {symbol} breaking out with strong volume",
-    "📊 **PATTERN:** Bullish flag formation confirmed on {symbol}"
+    "🚨 <b>BREAKING:</b> High-probability setup detected on {symbol}",
+    "⚡ <b>URGENT:</b> Major support level tested on {symbol} - Watch closely!",
+    "🔥 <b>ALERT:</b> Unusual volume spike detected - {symbol} moving!",
+    "💎 <b>OPPORTUNITY:</b> Golden crossover forming on {symbol}",
+    "🎯 <b>SETUP:</b> Perfect risk/reward ratio developing on {symbol}",
+    "⚠️ <b>WATCH:</b> {symbol} approaching key resistance level",
+    "🚀 <b>MOMENTUM:</b> {symbol} breaking out with strong volume",
+    "📊 <b>PATTERN:</b> Bullish flag formation confirmed on {symbol}"
 ]
 
 VIP_TEASERS = [
-    "💎 **VIP EXCLUSIVE:** Premium members got this signal 15 minutes early",
-    "🔒 **VIP ALERT:** Advanced scanner detected this before the breakout",
-    "⭐ **PREMIUM FEATURE:** VIP members received detailed entry/exit levels",
-    "💼 **VIP BENEFIT:** Exclusive risk management guidance provided",
-    "🎯 **ELITE ACCESS:** VIP traders got the full technical breakdown",
-    "👑 **PREMIUM EDGE:** VIP members alerted at optimal entry price",
-    "💎 **VIP SIGNAL:** This trade posted to premium channel first",
-    "🔐 **EXCLUSIVE:** VIP members received live chart analysis"
+    "💎 <b>VIP EXCLUSIVE:</b> Premium members got this signal 15 minutes early",
+    "🔒 <b>VIP ALERT:</b> Advanced scanner detected this before the breakout",
+    "⭐ <b>PREMIUM FEATURE:</b> VIP members received detailed entry/exit levels",
+    "💼 <b>VIP BENEFIT:</b> Exclusive risk management guidance provided",
+    "🎯 <b>ELITE ACCESS:</b> VIP traders got the full technical breakdown",
+    "👑 <b>PREMIUM EDGE:</b> VIP members alerted at optimal entry price",
+    "💎 <b>VIP SIGNAL:</b> This trade posted to premium channel first",
+    "🔐 <b>EXCLUSIVE:</b> VIP members received live chart analysis"
 ]
 
 
