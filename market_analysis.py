@@ -252,3 +252,4 @@ def get_themed_analysis(theme="crypto"):
 __all__ = ['ALL_ANALYSES', 'get_random_analysis', 'get_themed_analysis', 'generate_symbol_analysis']
 
 print(f"✅ Loaded {len(ALL_ANALYSES)} market analyses")
+
