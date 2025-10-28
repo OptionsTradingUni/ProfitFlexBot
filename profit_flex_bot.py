@@ -24,10 +24,18 @@ from image_generator_enhanced import create_ultra_realistic_mobile_trade_screens
 from price_simulator import price_sim
 from market_analyzer import market_analyzer
 from content_generators import (
-    get_educational_tip, get_success_story, get_social_proof,
-    get_hot_alert, get_vip_teaser, get_disclaimer,
+    get_social_proof, get_hot_alert, get_vip_teaser, get_disclaimer,
     generate_daily_recap, generate_weekly_recap, generate_trader_of_week
 )
+
+# Import new massive content libraries
+import educational_tips
+import market_analysis
+import success_stories
+import risk_warnings
+import community_posts
+import trader_testimonials
+from admin_commands import handle_admin_command
 
 # Configure logging
 logging.basicConfig(
@@ -270,17 +278,17 @@ async def post_trade():
         return False
 
 async def post_educational_tip():
-    """Post an educational trading tip"""
+    """Post an educational trading tip from massive 1000+ library"""
     if not TELEGRAM_BOT_TOKEN or not CHANNEL_ID:
         return False
     
     try:
-        tip = get_educational_tip()
+        tip = educational_tips.get_random_tip()
         bot = Bot(token=TELEGRAM_BOT_TOKEN)
         await bot.send_message(
             chat_id=CHANNEL_ID,
-            text=tip,
-            parse_mode='Markdown'
+            text=f"💡 <b>Trading Tip</b>\n\n{tip}",
+            parse_mode='HTML'
         )
         logger.info("✅ Educational tip posted successfully!")
         return True
@@ -289,22 +297,98 @@ async def post_educational_tip():
         return False
 
 async def post_success_story():
-    """Post a member success story"""
+    """Post a member success story from 500+ library"""
     if not TELEGRAM_BOT_TOKEN or not CHANNEL_ID:
         return False
     
     try:
-        story = get_success_story()
+        story = success_stories.get_random_story()
         bot = Bot(token=TELEGRAM_BOT_TOKEN)
         await bot.send_message(
             chat_id=CHANNEL_ID,
-            text=story,
-            parse_mode='Markdown'
+            text=f"🎉 <b>Community Success Story</b>\n\n{story}",
+            parse_mode='HTML'
         )
         logger.info("✅ Success story posted successfully!")
         return True
     except Exception as e:
         logger.error(f"Error posting success story: {e}")
+        return False
+
+async def post_market_analysis():
+    """Post market analysis from 500+ analysis library"""
+    if not TELEGRAM_BOT_TOKEN or not CHANNEL_ID:
+        return False
+    
+    try:
+        analysis = market_analysis.get_random_analysis()
+        bot = Bot(token=TELEGRAM_BOT_TOKEN)
+        await bot.send_message(
+            chat_id=CHANNEL_ID,
+            text=f"📊 <b>Market Analysis</b>\n\n{analysis}",
+            parse_mode='HTML'
+        )
+        logger.info("✅ Market analysis posted successfully!")
+        return True
+    except Exception as e:
+        logger.error(f"Error posting market analysis: {e}")
+        return False
+
+async def post_risk_warning():
+    """Post risk warning/educational disclaimer from 500+ library"""
+    if not TELEGRAM_BOT_TOKEN or not CHANNEL_ID:
+        return False
+    
+    try:
+        warning = risk_warnings.get_random_warning()
+        bot = Bot(token=TELEGRAM_BOT_TOKEN)
+        await bot.send_message(
+            chat_id=CHANNEL_ID,
+            text=f"⚠️ <b>Risk Management</b>\n\n{warning}",
+            parse_mode='HTML'
+        )
+        logger.info("✅ Risk warning posted successfully!")
+        return True
+    except Exception as e:
+        logger.error(f"Error posting risk warning: {e}")
+        return False
+
+async def post_community_engagement():
+    """Post community poll/question/discussion from 500+ library"""
+    if not TELEGRAM_BOT_TOKEN or not CHANNEL_ID:
+        return False
+    
+    try:
+        post = community_posts.get_random_community_post()
+        bot = Bot(token=TELEGRAM_BOT_TOKEN)
+        await bot.send_message(
+            chat_id=CHANNEL_ID,
+            text=f"💬 <b>Community</b>\n\n{post}",
+            parse_mode='HTML'
+        )
+        logger.info("✅ Community post posted successfully!")
+        return True
+    except Exception as e:
+        logger.error(f"Error posting community post: {e}")
+        return False
+
+async def post_testimonial():
+    """Post trader testimonial from 500+ library"""
+    if not TELEGRAM_BOT_TOKEN or not CHANNEL_ID:
+        return False
+    
+    try:
+        testimonial = trader_testimonials.get_random_testimonial()
+        bot = Bot(token=TELEGRAM_BOT_TOKEN)
+        await bot.send_message(
+            chat_id=CHANNEL_ID,
+            text=f"⭐ <b>Community Testimonial</b>\n\n{testimonial}",
+            parse_mode='HTML'
+        )
+        logger.info("✅ Testimonial posted successfully!")
+        return True
+    except Exception as e:
+        logger.error(f"Error posting testimonial: {e}")
         return False
 
 async def post_daily_recap():
@@ -412,11 +496,12 @@ async def run_bot():
                 await asyncio.sleep(60)
                 continue
             
-            # Determine what type of post to make
-            # 70% trades, 15% educational, 8% success stories, 5% daily recap, 2% trader of week
+            # Determine what type of post to make - RICH VARIED CONTENT
+            # 50% trades, 15% educational, 10% market analysis, 8% success stories, 
+            # 7% risk warnings, 5% community engagement, 3% testimonials, 1.5% daily recap, 0.5% trader of week
             post_type = random.choices(
-                ['trade', 'education', 'success', 'recap', 'trader_week'],
-                weights=[70, 15, 8, 5, 2],
+                ['trade', 'education', 'analysis', 'success', 'risk', 'community', 'testimonial', 'recap', 'trader_week'],
+                weights=[50, 15, 10, 8, 7, 5, 3, 1.5, 0.5],
                 k=1
             )[0]
             
@@ -426,8 +511,16 @@ async def run_bot():
                 success = await post_trade()
             elif post_type == 'education':
                 success = await post_educational_tip()
+            elif post_type == 'analysis':
+                success = await post_market_analysis()
             elif post_type == 'success':
                 success = await post_success_story()
+            elif post_type == 'risk':
+                success = await post_risk_warning()
+            elif post_type == 'community':
+                success = await post_community_engagement()
+            elif post_type == 'testimonial':
+                success = await post_testimonial()
             elif post_type == 'recap':
                 success = await post_daily_recap()
             elif post_type == 'trader_week':
