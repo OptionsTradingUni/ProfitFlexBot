@@ -10,6 +10,27 @@ def generate_name():
     """Generate unique full name"""
     return f"{random.choice(FIRST_NAMES)} {random.choice(LAST_NAMES)}"
 
+def _get_placeholder_values():
+    """Generate random values for all placeholders used in quotes"""
+    return {
+        'percent': random.randint(10, 300),
+        'months': random.randint(1, 12),
+        'years': random.randint(1, 5),
+        'amount': f"{random.choice([1000, 5000, 10000, 25000, 50000]):,}",
+        'low': random.randint(20, 45),
+        'high': random.randint(60, 90),
+        'debt': f"{random.choice([10000, 25000, 50000]):,}",
+        'start': f"{random.choice([1000, 5000, 10000]):,}",
+        'end': f"{random.choice([25000, 50000, 100000]):,}"
+    }
+
+def _format_quote(text):
+    """Safely format a quote with placeholder values"""
+    try:
+        return text.format(**_get_placeholder_values())
+    except (KeyError, ValueError):
+        return text
+
 # Testimonial templates
 TESTIMONIAL_TEMPLATES = [
     '"{quote}" - {name}, {title}',
@@ -188,37 +209,27 @@ DETAILED_TESTIMONIALS = []
 def generate_detailed_testimonial():
     """Generate longer, detailed testimonial"""
     name = generate_name()
+    
+    # Format all quotes to replace placeholders
+    positive_quote = _format_quote(random.choice(POSITIVE_QUOTES))
+    achievement_quote = _format_quote(random.choice(ACHIEVEMENT_QUOTES))
+    learning_quote = random.choice(LEARNING_QUOTES)
+    community_quote = random.choice(COMMUNITY_QUOTES)
+    transformation_quote = random.choice(TRANSFORMATION_QUOTES)
+    platform_quote = random.choice(PLATFORM_QUOTES)
+    feature_quote = random.choice(FEATURE_TESTIMONIALS)
+    
     story_templates = [
         f"""⭐⭐⭐⭐⭐ LIFE-CHANGING EXPERIENCE
-\"{random.choice(POSITIVE_QUOTES)}. {random.choice(ACHIEVEMENT_QUOTES).format(
-    percent=random.randint(50, 300),
-    months=random.randint(3, 12),
-    years=random.randint(1, 3),
-    amount=f'{random.choice([10000, 25000, 50000]):,}',
-    low=random.randint(20, 40),
-    high=random.randint(65, 85),
-    debt=f'{random.choice([15000, 30000]):,}',
-    start=f'{random.choice([2000, 5000]):,}',
-    end=f'{random.choice([30000, 75000]):,}'
-)}. {random.choice(LEARNING_QUOTES)}. {random.choice(COMMUNITY_QUOTES)}.\"
+\"{positive_quote}. {achievement_quote}. {learning_quote}. {community_quote}.\"
 - {name}, member since {random.choice(['Jan 2024', 'Mar 2024', 'Jun 2024', 'Sep 2024'])}""",
 
         f"""💎 HIGHLY RECOMMEND
-\"{random.choice(TRANSFORMATION_QUOTES)}. {random.choice(PLATFORM_QUOTES)}. {random.choice(FEATURE_TESTIMONIALS)}. This isn't just a signal group - it's a complete trading education.\"
+\"{transformation_quote}. {platform_quote}. {feature_quote}. This isn't just a signal group - it's a complete trading education.\"
 - {name}, {random.choice(['Professional Trader', 'Full-time Trader', 'Former Engineer'])}""",
 
         f"""🚀 EXCEEDED EXPECTATIONS
-\"I was skeptical at first, but {random.choice(POSITIVE_QUOTES).lower()}. {random.choice(ACHIEVEMENT_QUOTES).format(
-    percent=random.randint(75, 250),
-    months=random.randint(2, 8),
-    years=random.randint(1, 4),
-    amount=f'{random.choice([5000, 15000, 35000]):,}',
-    low=random.randint(25, 45),
-    high=random.randint(70, 90),
-    debt=f'{random.choice([20000, 40000]):,}',
-    start=f'{random.choice([3000, 8000]):,}',
-    end=f'{random.choice([40000, 100000]):,}'
-)}. Worth every penny and more.\"
+\"I was skeptical at first, but {positive_quote.lower()}. {achievement_quote}. Worth every penny and more.\"
 - {name}, trading for {random.randint(2, 8)} years""",
     ]
     
@@ -233,19 +244,12 @@ ALL_TESTIMONIALS.extend(DETAILED_TESTIMONIALS)
 VIDEO_STYLE = []
 for _ in range(50):
     name = generate_name()
+    # Format both quotes to replace placeholders
+    positive_quote = _format_quote(random.choice(POSITIVE_QUOTES))
+    achievement_quote = _format_quote(random.choice(ACHIEVEMENT_QUOTES))
     VIDEO_STYLE.append(f"""
 🎥 {name} - Video Testimonial
-"{random.choice(POSITIVE_QUOTES)}. My results speak for themselves: {random.choice(ACHIEVEMENT_QUOTES).format(
-    percent=random.randint(40, 180),
-    months=random.randint(2, 10),
-    years=random.randint(1, 5),
-    amount=f'{random.choice([8000, 20000, 45000]):,}',
-    low=random.randint(30, 45),
-    high=random.randint(68, 88),
-    debt=f'{random.choice([12000, 28000]):,}',
-    start=f'{random.choice([2500, 6000]):,}',
-    end=f'{random.choice([25000, 65000]):,}'
-)}. If you're serious about trading, join this community."
+"{positive_quote}. My results speak for themselves: {achievement_quote}. If you're serious about trading, join this community."
 ⭐⭐⭐⭐⭐
     """.strip())
 

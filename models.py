@@ -9,18 +9,25 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     raise SystemExit("FATAL: DATABASE_URL environment variable is not set. Please set up the PostgreSQL database.")
 
-# Fix Railway's DATABASE_URL if it contains unexpanded variables
-if DATABASE_URL and "$" in DATABASE_URL:
+# Fix Railway's DATABASE_URL if it contains unexpanded variables or placeholders
+if DATABASE_URL:
     import re
-    # Replace any $PORT or ${PORT} with actual PORT value
-    port = os.getenv("PORT", "5432")
-    DATABASE_URL = re.sub(r'\$\{?PORT\}?', port, DATABASE_URL)
-    # Replace any other common variables
-    DATABASE_URL = DATABASE_URL.replace("$PGPORT", os.getenv("PGPORT", "5432"))
-    DATABASE_URL = DATABASE_URL.replace("$PGHOST", os.getenv("PGHOST", "localhost"))
-    DATABASE_URL = DATABASE_URL.replace("$PGUSER", os.getenv("PGUSER", "postgres"))
-    DATABASE_URL = DATABASE_URL.replace("$PGPASSWORD", os.getenv("PGPASSWORD", ""))
-    DATABASE_URL = DATABASE_URL.replace("$PGDATABASE", os.getenv("PGDATABASE", "postgres"))
+    
+    # Replace $VAR or ${VAR} style variables
+    if "$" in DATABASE_URL:
+        port = os.getenv("PORT", "5432")
+        DATABASE_URL = re.sub(r'\$\{?PORT\}?', port, DATABASE_URL)
+        DATABASE_URL = DATABASE_URL.replace("$PGPORT", os.getenv("PGPORT", "5432"))
+        DATABASE_URL = DATABASE_URL.replace("$PGHOST", os.getenv("PGHOST", "localhost"))
+        DATABASE_URL = DATABASE_URL.replace("$PGUSER", os.getenv("PGUSER", "postgres"))
+        DATABASE_URL = DATABASE_URL.replace("$PGPASSWORD", os.getenv("PGPASSWORD", ""))
+        DATABASE_URL = DATABASE_URL.replace("$PGDATABASE", os.getenv("PGDATABASE", "postgres"))
+    
+    # Fix malformed URLs with literal "port" instead of port number
+    # Pattern: postgresql://user:pass@host:port/db where "port" is literal
+    if ":port/" in DATABASE_URL or ":port@" in DATABASE_URL:
+        DATABASE_URL = DATABASE_URL.replace(":port/", ":5432/").replace(":port@", ":5432@")
+        print(f"⚠️ WARNING: Fixed malformed DATABASE_URL containing literal 'port' placeholder")
 
 engine = create_engine(DATABASE_URL, future=True)
 metadata = MetaData()

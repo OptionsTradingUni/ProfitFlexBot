@@ -260,7 +260,7 @@ async def post_trade():
 🏦 <b>Broker:</b> {trade['broker_name']}
 {social_proof}{vip_teaser}
 
-<a href="https://{verification_domain}/log/{trade['txid']}">🔗 View Full Verification Report</a>
+🔗 <a href="https://{verification_domain}/log/{trade['txid']}">View Full Verification Report</a>
 
 {disclaimer}"""
         
@@ -310,7 +310,7 @@ async def post_success_story():
         bot = Bot(token=TELEGRAM_BOT_TOKEN)
         await bot.send_message(
             chat_id=CHANNEL_ID,
-            text=f"🎉 <b>Community Success Story</b>\n\n{story}",
+            text=f"🎉 <b>Member Success Story</b>\n\n{story}",
             parse_mode='HTML'
         )
         logger.info("✅ Success story posted successfully!")
@@ -386,7 +386,7 @@ async def post_testimonial():
         bot = Bot(token=TELEGRAM_BOT_TOKEN)
         await bot.send_message(
             chat_id=CHANNEL_ID,
-            text=f"⭐ <b>Community Testimonial</b>\n\n{testimonial}",
+            text=f"⭐ <b>Trader Testimonial</b>\n\n{testimonial}",
             parse_mode='HTML'
         )
         logger.info("✅ Testimonial posted successfully!")
