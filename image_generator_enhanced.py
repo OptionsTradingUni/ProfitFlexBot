@@ -726,6 +726,34 @@ def create_ultra_realistic_mobile_trade_screenshot(
     final_with_border.paste(shadow_img, (0, 0), shadow_img)
     final_with_border.paste(img_with_rounded, (30, 30), img_with_rounded)
     
+    # Add subtle watermark branding
+    watermark_draw = ImageDraw.Draw(final_with_border)
+    try:
+        watermark_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 22)
+    except:
+        watermark_font = ImageFont.load_default()
+    
+    # Add watermark in bottom right corner
+    watermark_text = "Options Trading University"
+    wm_bbox = watermark_draw.textbbox((0, 0), watermark_text, font=watermark_font)
+    wm_width = wm_bbox[2] - wm_bbox[0]
+    wm_x = (width + 60) - wm_width - 50
+    wm_y = (height + 60) - 60
+    
+    # Semi-transparent background for watermark
+    watermark_draw.rounded_rectangle(
+        (wm_x - 15, wm_y - 10, wm_x + wm_width + 15, wm_y + 40),
+        radius=10,
+        fill=(0, 0, 0, 120)
+    )
+    
+    # Watermark text with subtle opacity
+    watermark_draw.text((wm_x, wm_y), watermark_text, fill=(255, 255, 255, 180), font=watermark_font)
+    
+    # Add verified badge emoji
+    badge_text = "✅"
+    watermark_draw.text((wm_x - 35, wm_y), badge_text, font=watermark_font)
+    
     return final_with_border
 
 def save_trade_image(img, txid):

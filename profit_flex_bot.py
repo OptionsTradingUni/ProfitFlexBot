@@ -23,6 +23,11 @@ from verification_texts import generate_unique_txid
 from image_generator_enhanced import create_ultra_realistic_mobile_trade_screenshot, save_trade_image
 from price_simulator import price_sim
 from market_analyzer import market_analyzer
+from content_generators import (
+    get_educational_tip, get_success_story, get_social_proof,
+    get_hot_alert, get_vip_teaser, get_disclaimer,
+    generate_daily_recap, generate_weekly_recap, generate_trader_of_week
+)
 
 # Configure logging
 logging.basicConfig(
@@ -215,7 +220,25 @@ async def post_trade():
         if trade.get("win_streak") and trade["profit"] > 0:
             streak_line = f"{trade['win_streak']}\n"
         
-        caption = f"""{profit_emoji} <b>{trade['symbol']}</b> Trade Filled
+        # Add hot alert for big wins
+        hot_alert = ""
+        if trade["profit"] > 10000:
+            hot_alert = get_hot_alert(trade['symbol']) + "\n\n"
+        
+        # Add social proof randomly
+        social_proof = ""
+        if random.random() < 0.3:
+            social_proof = "\n" + get_social_proof()
+        
+        # Add VIP teaser for high-profit trades
+        vip_teaser = ""
+        if trade["profit"] > 5000 and random.random() < 0.4:
+            vip_teaser = "\n" + get_vip_teaser()
+        
+        # Get disclaimer
+        disclaimer = get_disclaimer()
+        
+        caption = f"""{hot_alert}{profit_emoji} <b>{trade['symbol']}</b> Trade Filled
 
 {tags_line}{streak_line}
 💰 <b>Profit:</b> {profit_sign}${trade['profit']:,.2f}
@@ -223,8 +246,11 @@ async def post_trade():
 💵 <b>Invested:</b> ${trade['deposit']:,.2f}
 👤 <b>Trader:</b> {trade['trader_name']}
 🏦 <b>Broker:</b> {trade['broker_name']}
+{social_proof}{vip_teaser}
 
-<a href="https://{DOMAIN}/log/{trade['txid']}">🔗 View Full Verification Report</a>"""
+<a href="https://{DOMAIN}/log/{trade['txid']}">🔗 View Full Verification Report</a>
+
+{disclaimer}"""
         
         # Send to Telegram
         bot = Bot(token=TELEGRAM_BOT_TOKEN)
@@ -243,6 +269,128 @@ async def post_trade():
         logger.error(f"Error posting trade: {e}", exc_info=True)
         return False
 
+async def post_educational_tip():
+    """Post an educational trading tip"""
+    if not TELEGRAM_BOT_TOKEN or not CHANNEL_ID:
+        return False
+    
+    try:
+        tip = get_educational_tip()
+        bot = Bot(token=TELEGRAM_BOT_TOKEN)
+        await bot.send_message(
+            chat_id=CHANNEL_ID,
+            text=tip,
+            parse_mode='Markdown'
+        )
+        logger.info("✅ Educational tip posted successfully!")
+        return True
+    except Exception as e:
+        logger.error(f"Error posting educational tip: {e}")
+        return False
+
+async def post_success_story():
+    """Post a member success story"""
+    if not TELEGRAM_BOT_TOKEN or not CHANNEL_ID:
+        return False
+    
+    try:
+        story = get_success_story()
+        bot = Bot(token=TELEGRAM_BOT_TOKEN)
+        await bot.send_message(
+            chat_id=CHANNEL_ID,
+            text=story,
+            parse_mode='Markdown'
+        )
+        logger.info("✅ Success story posted successfully!")
+        return True
+    except Exception as e:
+        logger.error(f"Error posting success story: {e}")
+        return False
+
+async def post_daily_recap():
+    """Post daily trading recap"""
+    if not TELEGRAM_BOT_TOKEN or not CHANNEL_ID:
+        return False
+    
+    try:
+        from sqlalchemy import select, func
+        with engine.connect() as conn:
+            today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0)
+            
+            total_trades = conn.execute(
+                select(func.count()).select_from(trade_logs).where(trade_logs.c.posted_at >= today_start)
+            ).scalar() or 0
+            
+            total_profit = conn.execute(
+                select(func.sum(trade_logs.c.profit)).where(trade_logs.c.posted_at >= today_start)
+            ).scalar() or 0
+            
+            winning_trades = conn.execute(
+                select(func.count()).select_from(trade_logs).where(
+                    trade_logs.c.posted_at >= today_start,
+                    trade_logs.c.profit > 0
+                )
+            ).scalar() or 0
+            
+            win_rate = (winning_trades / total_trades * 100) if total_trades > 0 else 0
+            
+            best_trade = conn.execute(
+                select(func.max(trade_logs.c.profit)).where(trade_logs.c.posted_at >= today_start)
+            ).scalar() or 0
+        
+        stats = {
+            'total_trades': total_trades,
+            'total_profit': total_profit,
+            'win_rate': win_rate,
+            'best_trade': best_trade
+        }
+        
+        recap = generate_daily_recap(stats)
+        
+        bot = Bot(token=TELEGRAM_BOT_TOKEN)
+        await bot.send_message(
+            chat_id=CHANNEL_ID,
+            text=recap,
+            parse_mode='Markdown'
+        )
+        logger.info("✅ Daily recap posted successfully!")
+        return True
+    except Exception as e:
+        logger.error(f"Error posting daily recap: {e}")
+        return False
+
+async def post_trader_of_week():
+    """Post Trader of the Week feature"""
+    if not TELEGRAM_BOT_TOKEN or not CHANNEL_ID:
+        return False
+    
+    try:
+        from sqlalchemy import select
+        
+        top_trader = get_unique_trader()
+        
+        trader_stats = {
+            'name': top_trader,
+            'trades': random.randint(15, 45),
+            'profit': random.uniform(15000, 75000),
+            'win_rate': random.uniform(75, 95),
+            'streak': random.randint(5, 15)
+        }
+        
+        message = generate_trader_of_week(trader_stats)
+        
+        bot = Bot(token=TELEGRAM_BOT_TOKEN)
+        await bot.send_message(
+            chat_id=CHANNEL_ID,
+            text=message,
+            parse_mode='Markdown'
+        )
+        logger.info("✅ Trader of the Week posted successfully!")
+        return True
+    except Exception as e:
+        logger.error(f"Error posting Trader of the Week: {e}")
+        return False
+
 async def run_bot():
     """Main bot loop - posts trades periodically"""
     logger.info("🤖 Options Trading University Bot starting...")
@@ -254,6 +402,8 @@ async def run_bot():
     else:
         logger.info(f"Bot configured to post to channel: {CHANNEL_ID}")
     
+    post_count = 0
+    
     while True:
         try:
             # Check if bot is paused
@@ -262,8 +412,26 @@ async def run_bot():
                 await asyncio.sleep(60)
                 continue
             
-            # Post a trade
-            success = await post_trade()
+            # Determine what type of post to make
+            # 70% trades, 15% educational, 8% success stories, 5% daily recap, 2% trader of week
+            post_type = random.choices(
+                ['trade', 'education', 'success', 'recap', 'trader_week'],
+                weights=[70, 15, 8, 5, 2],
+                k=1
+            )[0]
+            
+            success = False
+            
+            if post_type == 'trade':
+                success = await post_trade()
+            elif post_type == 'education':
+                success = await post_educational_tip()
+            elif post_type == 'success':
+                success = await post_success_story()
+            elif post_type == 'recap':
+                success = await post_daily_recap()
+            elif post_type == 'trader_week':
+                success = await post_trader_of_week()
             
             if success:
                 bot_state["total_posts"] += 1
