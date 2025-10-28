@@ -92,6 +92,8 @@ A professional Telegram bot that delivers highly authentic trading insights for 
 - 🚀 **Ready for Railway**: Full deployment configuration included
 
 ## Recent Changes
+- **2025-10-28**: 🎓 **RENAMED TO OPTIONS TRADING UNIVERSITY** - Bot renamed from "Profit Flex Bot" for professional branding
+- **2025-10-28**: 👋 **WELCOME MESSAGE** - Auto-sends welcome to new members, deletes after 10 seconds to keep group clean
 - **2025-10-28**: 🔥 **MARKET ANALYZER** - Bot now analyzes real market conditions (SPY sentiment) and generates contextual trades!
 - **2025-10-28**: 🏷️ **MARKET TAGS** - Real-time tags: "🚀 Market Rip", "⏰ Power Hour", "🔥 Win Streaks", "⚡ Volatility Spike"
 - **2025-10-28**: 🌐 **STUNNING NEW UI** - Beautiful purple gradient homepage with live stats, modern trade cards, animations

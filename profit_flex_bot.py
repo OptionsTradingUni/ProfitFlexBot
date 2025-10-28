@@ -130,7 +130,9 @@ def generate_trade_data():
         "status": "FILLED",
         "timestamp": datetime.now(timezone.utc),
         "portfolio_value": random.uniform(50000, 500000),
-        "asset_type": asset_type
+        "asset_type": asset_type,
+        "market_tags": market_tags,
+        "win_streak": win_streak
     }
 
 async def post_trade():
@@ -205,13 +207,13 @@ async def post_trade():
         
         # Build market tags line
         tags_line = ""
-        if market_tags:
-            tags_line = "   ".join(market_tags) + "\n"
+        if trade.get("market_tags"):
+            tags_line = "   ".join(trade["market_tags"]) + "\n"
         
         # Build win streak line
         streak_line = ""
-        if win_streak and trade["profit"] > 0:
-            streak_line = f"{win_streak}\n"
+        if trade.get("win_streak") and trade["profit"] > 0:
+            streak_line = f"{trade['win_streak']}\n"
         
         caption = f"""{profit_emoji} <b>{trade['symbol']}</b> Trade Filled
 
