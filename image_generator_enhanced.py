@@ -524,7 +524,11 @@ def create_advanced_chart(symbol, entry_price, exit_price, profit_positive=True,
     ax_rsi.set_ylabel('RSI', color='#8B92A6', fontsize=7)
     ax_macd.set_ylabel('MACD', color='#8B92A6', fontsize=7)
     
-    plt.tight_layout()
+    # Use tight_layout with error suppression
+    import warnings
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        plt.tight_layout()
     
     buf = io.BytesIO()
     plt.savefig(buf, format='png', facecolor='#0B0F19', dpi=120, bbox_inches='tight')

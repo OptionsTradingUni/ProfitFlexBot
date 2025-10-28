@@ -155,19 +155,28 @@ class PriceSimulator:
         - NIKY: simulated meme coin price
         - Stocks: real prices from yfinance
         - Crypto: real prices from CoinGecko
+        - Meme coins: real prices from CoinGecko
         - Options: derived from underlying stock
         """
         symbol_upper = symbol.upper()
         
+        # Handle NIKY first (simulated meme coin)
         if symbol_upper == "NIKY" or "NIKY" in symbol_upper:
             return self.get_niky_price(simulate_movement=True)
         
-        if asset_type == "crypto" or any(x in symbol_upper for x in ['BTC', 'ETH', 'DOGE', 'SHIB', 'PEPE', 'USDT', 'USD']):
+        # Respect explicit asset_type when provided
+        if asset_type == "meme":
+            # Meme coins are fetched from CoinGecko like crypto
             price = self.get_real_crypto_price(symbol_upper)
             if price:
                 return price
         
-        if asset_type == "stock" or asset_type == "auto":
+        if asset_type == "crypto":
+            price = self.get_real_crypto_price(symbol_upper)
+            if price:
+                return price
+        
+        if asset_type == "stock":
             price = self.get_real_stock_price(symbol_upper)
             if price:
                 return price
@@ -181,6 +190,20 @@ class PriceSimulator:
             elif underlying in self.fallback_prices:
                 return self.fallback_prices[underlying] * (1 + random.uniform(-0.1, 0.1))
         
+        # Auto-detection fallback (only if asset_type == "auto")
+        if asset_type == "auto":
+            # Try crypto detection for major cryptos
+            major_cryptos = ['BTC', 'ETH', 'SOL', 'BNB', 'AVAX', 'MATIC', 'LINK']
+            if any(crypto in symbol_upper for crypto in major_cryptos):
+                price = self.get_real_crypto_price(symbol_upper)
+                if price:
+                    return price
+            
+            # Try stock
+            price = self.get_real_stock_price(symbol_upper)
+            if price:
+                return price
+        
         logger.info(f"Using fallback price for {symbol_upper}")
         return self.fallback_prices.get(symbol_upper, 100.0)
     
@@ -190,8 +213,8 @@ class PriceSimulator:
         if symbol is None:
             asset_types = {
                 'stock': ['AAPL', 'TSLA', 'NVDA', 'MSFT', 'GOOGL', 'AMZN', 'META', 'SPY', 'QQQ'],
-                'crypto': ['BTC', 'ETH', 'SOL', 'DOGE', 'SHIB', 'PEPE', 'AVAX', 'MATIC'],
-                'meme': ['NIKY', 'NIKY', 'NIKY'],
+                'crypto': ['BTC', 'ETH', 'SOL', 'BNB', 'AVAX', 'MATIC', 'LINK', 'UNI', 'ADA', 'XRP'],
+                'meme': ['NIKY', 'NIKY', 'NIKY', 'PEPE', 'SHIB', 'DOGE', 'WIF', 'BONK', 'FLOKI'],
                 'option': ['AAPL 180C', 'TSLA 260C', 'NVDA 900C', 'SPY 510P', 'QQQ 460C'],
                 'futures': ['/ES', '/NQ', '/CL', '/GC', '/SI', '/ZB'],
                 'forex': ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'NZD/USD'],
@@ -204,12 +227,21 @@ class PriceSimulator:
             symbol = random.choice(asset_types.get(asset_type, asset_types['stock']))
         
         if asset_type is None:
-            if 'NIKY' in symbol.upper():
+            # Define meme coin symbols
+            meme_coins = ['NIKY', 'PEPE', 'SHIB', 'DOGE', 'WIF', 'BONK', 'FLOKI', 'WOJAK', 'SPONGE', 'MEME']
+            # Define major crypto symbols  
+            major_cryptos = ['BTC', 'ETH', 'SOL', 'BNB', 'AVAX', 'MATIC', 'LINK', 'UNI', 'ADA', 'XRP', 'DOT']
+            
+            # Check if it's a meme coin first
+            if any(meme in symbol.upper() for meme in meme_coins):
                 asset_type = 'meme'
-            elif any(x in symbol.upper() for x in ['BTC', 'ETH', 'DOGE', 'SOL']):
+            # Then check if it's crypto
+            elif any(crypto in symbol.upper() for crypto in major_cryptos) or '/USD' in symbol.upper():
                 asset_type = 'crypto'
+            # Check for options
             elif 'C' in symbol or 'P' in symbol:
                 asset_type = 'option'
+            # Default to stock
             else:
                 asset_type = 'stock'
         

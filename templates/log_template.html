@@ -159,10 +159,47 @@
       line-height: 1.7;
       margin-top: 10px;
     }
+    .nav-header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 20px;
+      border-radius: 12px;
+    }
+    .nav-logo {
+      font-size: 20px;
+      font-weight: 700;
+      color: #3b82f6;
+      text-decoration: none;
+    }
+    .nav-btn {
+      background: linear-gradient(90deg, #3b82f6 0%, #10b981 100%);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    }
+    .nav-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+      color: white;
+      text-decoration: none;
+    }
   </style>
 </head>
 <body>
   <div class="container">
+    <div class="nav-header">
+      <a href="/" class="nav-logo">📊 Options Trading University</a>
+      <a href="/" class="nav-btn">🏠 View All Trades & Features</a>
+    </div>
     <div class="card">
       <div class="header">
         <div class="header-content">
