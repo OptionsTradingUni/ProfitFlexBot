@@ -1,8 +1,3 @@
-"""
-Market Analysis Content - 500+ Analyses
-Comprehensive library of market analysis and insights
-"""
-
 import random
 from datetime import datetime, timedelta
 
@@ -12,7 +7,7 @@ BULLISH_ANALYSES = [
     "🚀 {symbol} breaking out of {timeframe} consolidation pattern with volume",
     "💹 Institutional buying detected in {symbol} - large block orders at ${price}",
     "📊 {symbol} Golden Cross forming - 50MA crossing above 200MA",
-    "🎯 {symbol} reclaiming key resistance at ${price}, next target ${target}",
+    "🎯 {symbol} reclaiming key resistance at ${price}, next target ${target:.2f}",
     "⚡ {symbol} momentum accelerating - RSI trending higher",
     "🔥 {symbol} volume surge +{volume}% - institutions accumulating",
     "💰 {symbol} earnings beat expectations by {percent}% - upgrade cycle beginning",
@@ -25,7 +20,7 @@ BULLISH_ANALYSES = [
     "⚡ {symbol} whale wallets accumulating - on-chain data bullish",
     "🔥 {symbol} news catalyst: {news_type} - expect upside",
     "💹 {symbol} breaking multi-week resistance at ${price}",
-    "🎯 {symbol} institutional upgrades to 'Strong Buy' - target ${target}",
+    "🎯 {symbol} institutional upgrades to 'Strong Buy' - target ${target:.2f}",
     "📈 {symbol} forming ascending triangle - breakout zone ${price}",
     "🌊 {symbol} riding wave of sector rotation into {sector}",
 ]
@@ -35,7 +30,7 @@ BEARISH_ANALYSES = [
     "⚠️ {symbol} breaking down from {timeframe} support with volume",
     "🔴 Institutional selling detected in {symbol} - large exit orders",
     "📊 {symbol} Death Cross forming - 50MA crossing below 200MA",
-    "🎯 {symbol} losing key support at ${price}, next target ${target}",
+    "🎯 {symbol} losing key support at ${price}, next target ${target:.2f}",
     "⚡ {symbol} momentum deteriorating - RSI trending lower",
     "🔥 {symbol} volume surge on selling - institutions distributing",
     "💰 {symbol} earnings miss expectations by {percent}% - downgrade cycle beginning",
@@ -48,7 +43,7 @@ BEARISH_ANALYSES = [
     "⚡ {symbol} whale wallets dumping - on-chain data bearish",
     "🔥 {symbol} negative news: {news_type} - expect downside",
     "📉 {symbol} breaking multi-week support at ${price}",
-    "🎯 {symbol} institutional downgrades to 'Sell' - target ${target}",
+    "🎯 {symbol} institutional downgrades to 'Sell' - target ${target:.2f}",
     "📉 {symbol} forming descending triangle - breakdown zone ${price}",
     "🌊 {symbol} hurt by sector rotation out of {sector}",
 ]
@@ -66,7 +61,7 @@ NEUTRAL_ANALYSES = [
     "📊 {symbol} testing key level ${price} - direction unclear",
 ]
 
-# Sector analysis
+# Sector analysis (static, no placeholders)
 SECTOR_ANALYSES = [
     "🏦 Financial sector showing strength - bank stocks rallying",
     "💻 Technology leading markets higher - FAANG outperforming",
@@ -106,7 +101,7 @@ CRYPTO_ANALYSES = [
 
 # Forex analyses
 FOREX_ANALYSES = [
-    "💱 USD strengthening on Fed hawkish stance - DXY targeting {level}",
+    "💱 USD strengthening on Fed hawkish stance - DXY targeting {level:.2f}",
     "🌍 EUR under pressure - ECB dovish guidance weighing",
     "🇬🇧 GBP volatility on BoE decision - rate path uncertain",
     "🇯🇵 JPY safe-haven bid - risk-off flows intensifying",
@@ -118,9 +113,9 @@ FOREX_ANALYSES = [
     "📊 Currency correlations shifting - diversification important",
     "🌐 Emerging market FX under pressure - dollar strength",
     "⚡ Forex volatility increasing - central bank divergence",
-    "🎯 EUR/USD at key support {level} - make or break",
-    "💰 GBP/USD testing resistance {level} - Brexit clarity needed",
-    "📈 USD/JPY range-bound {low}-{high} - awaiting catalyst",
+    "🎯 EUR/USD at key support {level:.4f} - make or break",
+    "💰 GBP/USD testing resistance {level:.4f} - Brexit clarity needed",
+    "📈 USD/JPY range-bound {low:.2f}-{high:.2f} - awaiting catalyst",
 ]
 
 # Commodities analyses
@@ -186,25 +181,100 @@ def generate_multi_point_analysis(symbol):
     
     return "\n".join(analyses)
 
-# Expand to 500+ analyses
+# --- CORRECTED CODE STARTS HERE ---
+
+# Lists to hold generated analyses for themed retrieval
+GENERATED_STOCKS = []
+GENERATED_CRYPTO = []
+GENERATED_FOREX = []
+GENERATED_COMMODITIES = []
+GENERATED_SECTORS = SECTOR_ANALYSES  # This list is static, no generation needed
+GENERATED_NEWS = []
+GENERATED_NEUTRAL = []
+GENERATED_PATTERNS = []
+GENERATED_INDICATORS = []
+GENERATED_ECONOMIC = []
+
+
+# Master list to hold ALL generated analyses
 ALL_ANALYSES = []
 
-# Add all base analyses
-ALL_ANALYSES.extend(BULLISH_ANALYSES)
-ALL_ANALYSES.extend(BEARISH_ANALYSES)
-ALL_ANALYSES.extend(NEUTRAL_ANALYSES)
-ALL_ANALYSES.extend(SECTOR_ANALYSES)
-ALL_ANALYSES.extend(CRYPTO_ANALYSES)
-ALL_ANALYSES.extend(FOREX_ANALYSES)
-ALL_ANALYSES.extend(COMMODITIES_ANALYSES)
+# Add static sectors
+ALL_ANALYSES.extend(GENERATED_SECTORS)
 
-# Generate variations
+# Generate Crypto Analyses
+for template in CRYPTO_ANALYSES:
+    analysis = template.format(
+        direction=random.choice(["rising", "falling", "flat"]),
+        interpretation=random.choice(["bullish signal", "bearish signal", "neutral indicator"]),
+        status=random.choice(["high", "low", "normal"]),
+        trend=random.choice(["increasing", "decreasing", "sideways"]),
+        sentiment=random.choice(["positive", "negative", "mixed"]),
+        action=random.choice(["accumulating", "distributing", "holding"]),
+        level=f"{random.randint(40, 60)}%",
+    )
+    GENERATED_CRYPTO.append(analysis)
+ALL_ANALYSES.extend(GENERATED_CRYPTO)
+
+# Generate Forex Analyses
+for template in FOREX_ANALYSES:
+    analysis = template.format(
+        level=random.uniform(1.05, 1.25),
+        low=random.uniform(1.0, 1.1),
+        high=random.uniform(1.15, 1.25),
+    )
+    GENERATED_FOREX.append(analysis)
+ALL_ANALYSES.extend(GENERATED_FOREX)
+
+# Generate Commodities Analyses
+for template in COMMODITIES_ANALYSES:
+    analysis = template.format(
+        level=random.randint(1800, 2200)
+    )
+    GENERATED_COMMODITIES.append(analysis)
+ALL_ANALYSES.extend(GENERATED_COMMODITIES)
+
+# Generate News Analyses
+for template in NEWS_ANALYSES:
+    analysis = template.format(
+        symbol=random.choice(["AAPL", "TSLA", "GOOG"]),
+        news_event=random.choice(["new product launch", "stock split", "earnings surprise"]),
+        news_details=random.choice(["positive regulatory ruling", "SEC probe", "new EU data law"]),
+        partner=random.choice(["Microsoft", "NVIDIA", "OpenAI"]),
+        quote=random.choice(["'We are very optimistic'", "'Headwinds remain'", "'Future is bright'"]),
+        details=random.choice(["spinning off cloud division", "new cost-cutting measures"]),
+        target=random.choice(["a smaller rival", "a startup in AI"]),
+        highlights=random.choice(["raised guidance", "new AI strategy"]),
+        product=random.choice(["new M3 chip", "next-gen EV", "AR headset"]),
+        case_details=random.choice(["patent lawsuit settled", "antitrust case appeal"]),
+        region=random.choice(["Asia", "Europe", "Latin America"]),
+    )
+    GENERATED_NEWS.append(analysis)
+ALL_ANALYSES.extend(GENERATED_NEWS)
+
+# Generate symbol-specific stock analyses
 symbols = ["SPY", "QQQ", "BTC", "ETH", "AAPL", "TSLA", "NVDA", "MSFT", "AMZN", "GOOGL", 
            "EUR/USD", "GBP/USD", "USD/JPY", "GOLD", "OIL", "SOL", "ADA", "DOGE"]
 
 for symbol in symbols:
     for _ in range(5):
-        ALL_ANALYSES.append(generate_symbol_analysis(symbol, random.randint(50, 500), random.choice(["bullish", "bearish"])))
+        analysis = generate_symbol_analysis(symbol, random.randint(50, 500), random.choice(["bullish", "bearish"]))
+        GENERATED_STOCKS.append(analysis)
+ALL_ANALYSES.extend(GENERATED_STOCKS)
+
+# Generate Neutral Analyses
+for symbol in symbols:
+    for template in NEUTRAL_ANALYSES:
+        analysis = template.format(
+            symbol=symbol,
+            low=random.randint(100, 150),
+            high=random.randint(160, 200),
+            price=random.randint(151, 159),
+            timeframe=random.choice(["daily", "weekly"]),
+        )
+        GENERATED_NEUTRAL.append(analysis)
+ALL_ANALYSES.extend(GENERATED_NEUTRAL)
+
 
 # Technical pattern analyses
 patterns = [
@@ -214,14 +284,18 @@ patterns = [
 ]
 
 for pattern in patterns:
-    ALL_ANALYSES.append(f"📐 {pattern.title()} pattern forming - {random.choice(['bullish', 'bearish'])} implications")
-    ALL_ANALYSES.append(f"🎯 {pattern.title()} breakout target: {random.choice(['$150', '$200', '$250', '$300'])}")
+    analysis1 = f"📐 {pattern.title()} pattern forming - {random.choice(['bullish', 'bearish'])} implications"
+    analysis2 = f"🎯 {pattern.title()} breakout target: {random.choice(['$150', '$200', '$250', '$300'])}"
+    GENERATED_PATTERNS.extend([analysis1, analysis2])
+ALL_ANALYSES.extend(GENERATED_PATTERNS)
 
 # Indicator-based analyses
 indicators = ["RSI", "MACD", "Stochastic", "Bollinger Bands", "Moving Averages", "Volume"]
 for indicator in indicators:
     for sentiment in ["bullish", "bearish", "neutral"]:
-        ALL_ANALYSES.append(f"📊 {indicator} showing {sentiment} signals across multiple timeframes")
+        analysis = f"📊 {indicator} showing {sentiment} signals across multiple timeframes"
+        GENERATED_INDICATORS.append(analysis)
+ALL_ANALYSES.extend(GENERATED_INDICATORS)
 
 # Add economic calendar analyses
 economic_events = [
@@ -231,8 +305,12 @@ economic_events = [
 ]
 
 for event in economic_events:
-    ALL_ANALYSES.append(f"📅 Upcoming {event} - expect volatility in {random.choice(['equities', 'forex', 'commodities'])}")
-    ALL_ANALYSES.append(f"⏰ {event} ahead - positioning {random.choice(['defensive', 'aggressive', 'neutral'])}")
+    analysis1 = f"📅 Upcoming {event} - expect volatility in {random.choice(['equities', 'forex', 'commodities'])}"
+    analysis2 = f"⏰ {event} ahead - positioning {random.choice(['defensive', 'aggressive', 'neutral'])}"
+    GENERATED_ECONOMIC.extend([analysis1, analysis2])
+ALL_ANALYSES.extend(GENERATED_ECONOMIC)
+
+# --- FUNCTIONS ---
 
 def get_random_analysis():
     """Get random market analysis"""
@@ -240,16 +318,19 @@ def get_random_analysis():
 
 def get_themed_analysis(theme="crypto"):
     """Get analysis for specific theme"""
+    # This now correctly points to the lists of GENERATED analyses
     themed_analyses = {
-        "crypto": CRYPTO_ANALYSES,
-        "forex": FOREX_ANALYSES,
-        "stocks": BULLISH_ANALYSES + BEARISH_ANALYSES,
-        "commodities": COMMODITIES_ANALYSES,
-        "sector": SECTOR_ANALYSES
+        "crypto": GENERATED_CRYPTO,
+        "forex": GENERATED_FOREX,
+        "stocks": GENERATED_STOCKS,
+        "commodities": GENERATED_COMMODITIES,
+        "sector": GENERATED_SECTORS,
+        "news": GENERATED_NEWS,
+        "neutral": GENERATED_NEUTRAL,
     }
+    # Fallback to ALL_ANALYSES if theme not found
     return random.choice(themed_analyses.get(theme, ALL_ANALYSES))
 
 __all__ = ['ALL_ANALYSES', 'get_random_analysis', 'get_themed_analysis', 'generate_symbol_analysis']
 
 print(f"✅ Loaded {len(ALL_ANALYSES)} market analyses")
-
