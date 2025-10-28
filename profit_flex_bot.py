@@ -20,7 +20,6 @@ load_dotenv()
 from models import engine, trade_logs
 from traders import get_random_trader
 from verification_texts import generate_txid
-from stock_verification import get_broker_name
 from image_generator import create_professional_trade_image, save_trade_image
 
 # Configure logging

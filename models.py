@@ -4,13 +4,10 @@ import os
 from datetime import datetime
 from sqlalchemy import (create_engine, MetaData, Table, Column, Integer, 
                           String, Float, DateTime, text)
-from dotenv import load_dotenv
-
-load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
-    raise SystemExit("FATAL: DATABASE_URL is not set in .env")
+    raise SystemExit("FATAL: DATABASE_URL environment variable is not set. Please set up the PostgreSQL database.")
 
 engine = create_engine(DATABASE_URL, future=True)
 metadata = MetaData()

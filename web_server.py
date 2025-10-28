@@ -14,9 +14,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 logger.info("Web server script starting up...")
 
-# Load environment
-load_dotenv()
-
 # Import database models
 try:
     from models import engine, trade_logs
