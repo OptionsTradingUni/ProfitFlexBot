@@ -1,43 +1,61 @@
-# Profit Flex Bot - Professional Trading Insights Bot
+# Profit Flex Bot - Ultra-Realistic Mobile Trading App Screenshot Generator
 
 ## Overview
-A professional Telegram bot that delivers authentic trading insights for stocks, crypto, and meme coins with realistic profit/loss scenarios. Features professional broker-style trade confirmations with enhanced image generation.
+A professional Telegram bot that delivers highly authentic trading insights for stocks, crypto, and meme coins. Features ultra-realistic mobile app-style screenshots that look like actual phone captures from Robinhood, Coinbase, Webull, and other trading platforms. Includes custom meme coin NIKY with simulated price action.
 
 ## Project Structure
 ```
-├── profit_flex_bot.py      # Main Telegram bot logic
-├── web_server.py            # Flask web server for trade logs
-├── image_generator.py       # Professional image generation module
-├── models.py                # Database models and tables
-├── traders.py               # 10,000 authentic trader profiles
-├── verification_texts.py    # TXID and verification text generation
-├── stock_verification.py    # Broker/exchange verification templates
-├── templates/               # HTML templates for web interface
-│   ├── log_template.html   # Enhanced trade log viewer
-│   └── 404.html            # Error page
-├── static/                  # Static assets
-│   └── images/             # Generated trade images
-├── requirements.txt         # Python dependencies
-└── .env                     # Environment configuration
-
+├── profit_flex_bot.py           # Main Telegram bot logic
+├── web_server.py                # Flask web server for trade logs
+├── image_generator_enhanced.py  # Ultra-realistic mobile screenshot generator
+├── image_generator.py           # Original professional image generation (legacy)
+├── price_simulator.py           # Real market prices + NIKY custom coin simulator
+├── models.py                    # Database models and tables
+├── traders.py                   # 10,000 authentic trader profiles
+├── verification_texts.py        # TXID and verification text generation
+├── stock_verification.py        # Broker/exchange verification templates
+├── test_enhanced_features.py    # Test script for all enhanced features
+├── templates/                   # HTML templates for web interface
+│   ├── log_template.html       # Enhanced trade log viewer
+│   └── 404.html                # Error page
+├── trade_images/                # Generated mobile screenshot images
+├── requirements.txt             # Python dependencies
+└── .env                         # Environment configuration
 ```
 
-## Features
-- ✅ Professional broker-style trade images with authentic UI
-- ✅ Real-time market data integration (yfinance, CoinGecko, Coinbase)
-- ✅ Realistic candlestick charts with price movements
+## Ultra-Realistic Mobile Features (NEW)
+- 📱 **Authentic Mobile UI**: iOS/Android status bars with battery, signal strength, time
+- 🔥 **Social Proof**: Live watching counts (20k watching), trending badges, community followers, win streaks
+- 📊 **Advanced Technical Indicators**: RSI, MACD histogram, Bollinger Bands, Fibonacci retracement
+- 📈 **Support/Resistance Levels**: Realistic chart markings with price levels
+- 🛡️ **Risk Management Display**: Stop Loss, Take Profit targets (TP1, TP2), Risk:Reward ratios
+- 💼 **Portfolio Context**: Total portfolio value, position size percentage
+- ⏱️ **Trade Timing**: Position hold duration, entry/exit timestamps
+- 🏆 **Leaderboard Elements**: Rank badges (Top 3%), win rates, profit streaks
+- 📰 **Market Context**: Live news ticker, market sentiment, volatility indicators
+- 🎨 **Screenshot Style**: Rounded corners, mobile navigation bar, authentic app design
+- 🪙 **NIKY Custom Meme Coin**: Simulated price movements with realistic volatility
+
+## Standard Features
+- ✅ Real-time market prices for stocks, crypto, options (yfinance, CoinGecko)
+- ✅ Realistic candlestick charts with volume indicators
 - ✅ 10,000+ authentic trader profiles
-- ✅ Multiple broker themes (Robinhood, Webull, Schwab, Fidelity, Binance, Coinbase)
+- ✅ Multiple broker themes (Robinhood, Webull, Binance, Coinbase, Schwab, Fidelity)
 - ✅ PostgreSQL database for trade logs
 - ✅ Web interface for trade verification
 - ✅ Automated posting to Telegram channels
 
 ## Recent Changes
+- **2025-10-28**: MAJOR UPDATE - Ultra-realistic mobile app screenshot generator
+- **2025-10-28**: Added NIKY custom meme coin with price simulator
+- **2025-10-28**: Integrated real market prices for stocks/crypto via yfinance & CoinGecko
+- **2025-10-28**: Implemented RSI, MACD, Bollinger Bands technical indicators
+- **2025-10-28**: Added social proof elements (engagement, trending, streaks)
+- **2025-10-28**: Created risk management displays (SL, TP, R:R)
+- **2025-10-28**: Added portfolio context and leaderboard elements
+- **2025-10-28**: Mobile status bars, navigation, screenshot-style rounded corners
 - **2025-10-27**: Enhanced image generation with professional broker UI styling
 - **2025-10-27**: Added realistic chart generation with candlestick patterns
-- **2025-10-27**: Implemented multi-broker theme support
-- **2025-10-27**: Created responsive web interface with gradient designs
-- **2025-10-27**: Added comprehensive verification text system
 
 ## Technology Stack
 - **Backend**: Python 3.12, Flask, Gunicorn
