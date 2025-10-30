@@ -247,7 +247,7 @@ class PriceSimulator:
         
         current_price = self.get_price(symbol, asset_type)
         
-        profit_scenario = random.random() > 0.20
+        profit_scenario = random.random() > 0.25
         
         if profit_scenario:
             roi = random.uniform(5, 300)
