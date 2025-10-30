@@ -545,13 +545,13 @@ async def run_bot():
             # Wait between configured intervals with weighted selection
             # User requested intervals: 5-10, 15, 30, 40, 60 minutes
             interval_choices = [
+                (2, 0.20),
                 (5, 0.15),
                 (7, 0.15),
-                (10, 0.20),
-                (15, 0.25),
-                (30, 0.15),
-                (40, 0.05),
-                (60, 0.05)
+                (9, 0.15),
+                (10, 0.15),
+                (15, 0.05),
+                (20, 0.05)
             ]
             
             wait_minutes = random.choices(
@@ -575,7 +575,7 @@ async def run_bot():
 bot_state = {
     "paused": False,
     "post_interval_min": 2,
-    "post_interval_max": 10,
+    "post_interval_max": 15,
     "total_posts": 0,
     "start_time": datetime.now(timezone.utc)
 }
