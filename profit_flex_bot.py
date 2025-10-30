@@ -513,7 +513,7 @@ async def run_bot():
             # 7% risk warnings, 5% community engagement, 3% testimonials, 1.5% daily recap, 0.5% trader of week
             post_type = random.choices(
                 ['trade', 'education', 'analysis', 'success', 'risk', 'community', 'testimonial', 'recap', 'trader_week'],
-                weights=[50, 15, 10, 8, 7, 5, 3, 1.5, 0.5],
+                weights=[60, 10, 5, 8, 7, 5, 3, 1.5, 0.5],
                 k=1
             )[0]
             
@@ -574,8 +574,8 @@ async def run_bot():
 # Bot control state
 bot_state = {
     "paused": False,
-    "post_interval_min": 5,
-    "post_interval_max": 30,
+    "post_interval_min": 2,
+    "post_interval_max": 10,
     "total_posts": 0,
     "start_time": datetime.now(timezone.utc)
 }
